@@ -51,17 +51,6 @@ function New-ArxBitmap {
         [System.Drawing.Drawing2D.LinearGradientMode]::ForwardDiagonal)
     $g.FillPath($bg, $path)
 
-    # Halo violet discret.
-    $glowRect = New-Object System.Drawing.RectangleF(($s * 0.10), ($s * 0.06), ($s * 0.80), ($s * 0.80))
-    $glow = New-Object System.Drawing.Drawing2D.PathGradientBrush($path)
-    $glow.CenterColor = [System.Drawing.Color]::FromArgb(70, 139, 92, 246)
-    $glow.SurroundColors = @([System.Drawing.Color]::FromArgb(0, 139, 92, 246))
-    $g.FillEllipse($glow, $glowRect)
-
-    # Bordure lumineuse.
-    $ringPen = New-Object System.Drawing.Pen([System.Drawing.Color]::FromArgb(210, 139, 92, 246), [Math]::Max(1.5, $s * 0.018))
-    $g.DrawPath($ringPen, $path)
-
     # « A » stylisé : deux jambes + barre, tracé arrondi.
     $violet = [System.Drawing.Color]::FromArgb(255, 167, 139, 250)
     $cyan = [System.Drawing.Color]::FromArgb(255, 34, 211, 238)
@@ -71,30 +60,23 @@ function New-ArxBitmap {
     $pen.EndCap = [System.Drawing.Drawing2D.LineCap]::Round
     $pen.LineJoin = [System.Drawing.Drawing2D.LineJoin]::Round
 
-    $apex = New-Object System.Drawing.PointF(($s * 0.50), ($s * 0.20))
-    $left = New-Object System.Drawing.PointF(($s * 0.24), ($s * 0.79))
-    $right = New-Object System.Drawing.PointF(($s * 0.76), ($s * 0.79))
+    $apex = New-Object System.Drawing.PointF(($s * 0.50), ($s * 0.22))
+    $left = New-Object System.Drawing.PointF(($s * 0.24), ($s * 0.76))
+    $right = New-Object System.Drawing.PointF(($s * 0.76), ($s * 0.76))
     $g.DrawLine($pen, $apex, $left)
     $cyanPen = New-Object System.Drawing.Pen($cyan, $penWidth)
     $cyanPen.StartCap = [System.Drawing.Drawing2D.LineCap]::Round
     $cyanPen.EndCap = [System.Drawing.Drawing2D.LineCap]::Round
     $g.DrawLine($cyanPen, $apex, $right)
 
-    # Barre du A avec un dégradé.
+    # Barre musicale brisée : signature originale lisible en petit format.
     $barPen = New-Object System.Drawing.Pen([System.Drawing.Color]::FromArgb(255, 216, 180, 254), [Math]::Max(1.8, $s * 0.052))
     $barPen.StartCap = [System.Drawing.Drawing2D.LineCap]::Round
     $barPen.EndCap = [System.Drawing.Drawing2D.LineCap]::Round
-    $g.DrawLine($barPen, [Math]::Round($s * 0.36), [Math]::Round($s * 0.58), [Math]::Round($s * 0.64), [Math]::Round($s * 0.58))
-
-    if (-not $Wizard) {
-        # Petite forme d'onde sous le A.
-        $wavePen = New-Object System.Drawing.Pen([System.Drawing.Color]::FromArgb(170, 148, 163, 184), [Math]::Max(1.0, $s * 0.012))
-        for ($i = 0; $i -lt 7; $i++) {
-            $x = $s * (0.28 + $i * 0.0733)
-            $h = @(0.018, 0.035, 0.055, 0.075, 0.055, 0.035, 0.018)[$i] * $s
-            $g.DrawLine($wavePen, $x, ($s * 0.875 - $h), $x, ($s * 0.875 + $h))
-        }
-    }
+    $g.DrawLine($barPen, [float]($s * 0.35), [float]($s * 0.59), [float]($s * 0.46), [float]($s * 0.59))
+    $g.DrawLine($barPen, [float]($s * 0.46), [float]($s * 0.59), [float]($s * 0.51), [float]($s * 0.51))
+    $g.DrawLine($barPen, [float]($s * 0.51), [float]($s * 0.51), [float]($s * 0.56), [float]($s * 0.59))
+    $g.DrawLine($barPen, [float]($s * 0.56), [float]($s * 0.59), [float]($s * 0.65), [float]($s * 0.59))
 
     $g.Dispose()
     return $bmp
