@@ -1,0 +1,4 @@
+Samples de démonstration ARXFUND.
+
+Kick, Snare et HiHat sont synthétisés proceduralement pour ce projet.
+Ils peuvent être chargés sur un canal « Échantillon » du Channel Rack.

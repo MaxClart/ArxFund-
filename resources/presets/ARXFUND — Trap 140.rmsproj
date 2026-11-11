@@ -1,0 +1,557 @@
+{
+  "id": "proj-18e6d8f7b3ae17d4-7",
+  "name": "ARXFUND — Trap 140",
+  "bpm": 140.0,
+  "time_sig_num": 4,
+  "time_sig_den": 4,
+  "steps": 16,
+  "swing": 0.0,
+  "master_volume": 0.85,
+  "channels": [
+    {
+      "id": "ch-18e6d8f7b3ae1edc-8",
+      "name": "Kick",
+      "kind": "kick",
+      "color": [
+        248,
+        113,
+        113
+      ],
+      "volume": 0.8,
+      "pan": 0.0,
+      "pitch": 0.0,
+      "mute": false,
+      "solo": false,
+      "mixer_track": 0,
+      "sample_path": null
+    },
+    {
+      "id": "ch-18e6d8f7b3ae2198-9",
+      "name": "Clap",
+      "kind": "clap",
+      "color": [
+        244,
+        114,
+        182
+      ],
+      "volume": 0.8,
+      "pan": 0.0,
+      "pitch": 0.0,
+      "mute": false,
+      "solo": false,
+      "mixer_track": 1,
+      "sample_path": null
+    },
+    {
+      "id": "ch-18e6d8f7b3ae25e4-a",
+      "name": "Charley fermé",
+      "kind": "hat_closed",
+      "color": [
+        96,
+        165,
+        250
+      ],
+      "volume": 0.8,
+      "pan": 0.0,
+      "pitch": 0.0,
+      "mute": false,
+      "solo": false,
+      "mixer_track": 2,
+      "sample_path": null
+    },
+    {
+      "id": "ch-18e6d8f7b3ae28a0-b",
+      "name": "Basse 808",
+      "kind": "bass808",
+      "color": [
+        139,
+        92,
+        246
+      ],
+      "volume": 0.8,
+      "pan": 0.0,
+      "pitch": 0.0,
+      "mute": false,
+      "solo": false,
+      "mixer_track": 3,
+      "sample_path": null
+    }
+  ],
+  "patterns": [
+    {
+      "id": "pat-18e6d8f7b3ae2a30-c",
+      "name": "Pattern 1",
+      "length": 16,
+      "lanes": [
+        [
+          {
+            "on": true,
+            "velocity": 1.0,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": true,
+            "velocity": 0.9,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": true,
+            "velocity": 0.95,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          }
+        ],
+        [
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": true,
+            "velocity": 1.0,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": true,
+            "velocity": 1.0,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          }
+        ],
+        [
+          {
+            "on": true,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": true,
+            "velocity": 0.55,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": true,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 2
+          },
+          {
+            "on": true,
+            "velocity": 0.55,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": true,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": true,
+            "velocity": 0.55,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": true,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 2
+          },
+          {
+            "on": true,
+            "velocity": 0.55,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": true,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": true,
+            "velocity": 0.55,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": true,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 2
+          },
+          {
+            "on": true,
+            "velocity": 0.55,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": true,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": true,
+            "velocity": 0.55,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": true,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 2
+          },
+          {
+            "on": true,
+            "velocity": 0.55,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          }
+        ],
+        [
+          {
+            "on": true,
+            "velocity": 1.0,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": true,
+            "velocity": 0.9,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": true,
+            "velocity": 1.0,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": true,
+            "velocity": 0.85,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          }
+        ]
+      ]
+    }
+  ],
+  "active_pattern": 0,
+  "song_mode": false,
+  "arrangement": [
+    {
+      "pattern": 0,
+      "start_step": 0,
+      "length_steps": 16
+    }
+  ],
+  "created_at": 1794360059936,
+  "modified_at": 1794360059936,
+  "next_pattern_number": 2
+}
