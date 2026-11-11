@@ -149,7 +149,9 @@ fn copy_missing(src: &Path, dst: &Path, notes: &mut Vec<String>) {
 /// emplacement ne sont jamais écrasés.
 pub fn migrate_legacy_data() -> Vec<String> {
     let mut notes = Vec::new();
-    if std::env::var_os("ARXFUND_TEST_ROOT").is_some() { return notes; }
+    if std::env::var_os("ARXFUND_TEST_ROOT").is_some() {
+        return notes;
+    }
     let legacy = legacy_data_dir();
     let current = data_dir();
     if !legacy.is_dir() || legacy == current {

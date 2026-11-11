@@ -200,9 +200,15 @@ pub fn apply_theme(ctx: &eframe::egui::Context, theme: &ARXFUNDTheme) {
     style.visuals.widgets.active.bg_fill = theme.colors.accent_primary;
     style.spacing.item_spacing = eframe::egui::vec2(8.0, 6.0);
     style.spacing.button_padding = eframe::egui::vec2(10.0, 6.0);
-    style.text_styles.insert(eframe::egui::TextStyle::Body, FontId::proportional(14.0));
-    style.text_styles.insert(eframe::egui::TextStyle::Button, FontId::proportional(13.0));
-    style.text_styles.insert(eframe::egui::TextStyle::Small, FontId::proportional(12.0));
+    style
+        .text_styles
+        .insert(eframe::egui::TextStyle::Body, FontId::proportional(14.0));
+    style
+        .text_styles
+        .insert(eframe::egui::TextStyle::Button, FontId::proportional(13.0));
+    style
+        .text_styles
+        .insert(eframe::egui::TextStyle::Small, FontId::proportional(12.0));
     ctx.set_theme(eframe::egui::Theme::Dark);
     ctx.set_style_of(eframe::egui::Theme::Dark, style);
 }

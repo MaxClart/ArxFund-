@@ -50,7 +50,9 @@ impl Sequencer {
             steal_index: 0,
             last_bass: Vec::new(),
             stop_at_samples: None,
-            delay: (0..MAX_CHANNELS).map(|_| vec![[0.0; 2]; (sample_rate * 0.3).max(1.0) as usize]).collect(),
+            delay: (0..MAX_CHANNELS)
+                .map(|_| vec![[0.0; 2]; (sample_rate * 0.3).max(1.0) as usize])
+                .collect(),
             delay_pos: 0,
         }
     }
@@ -142,14 +144,18 @@ impl Sequencer {
         self.steal_index = (self.steal_index + 1) % self.voices.len();
     }
 
-    fn resolve_step(project: &Project, global_step: u64) -> Option<(usize, usize)> {
+    fn resolve_step(
+        project: &Project,
+        global_step: u64,
+        clip_index: usize,
+    ) -> Option<(usize, usize)> {
         if project.patterns.is_empty() {
             return None;
         }
         if project.song_mode {
             let song_len = project.song_length_steps().max(1) as u64;
             let pos = (global_step % song_len) as usize;
-            for clip in &project.arrangement {
+            if let Some(clip) = project.arrangement.get(clip_index) {
                 if pos >= clip.start_step && pos < clip.start_step.saturating_add(clip.length_steps)
                 {
                     let pi = clip.pattern.min(project.patterns.len() - 1);
@@ -174,87 +180,91 @@ impl Sequencer {
             let beats_per_bar = project.time_sig_num.max(1) as u64;
             let beat_in_bar = (triggered / STEPS_PER_BEAT as u64) % beats_per_bar;
             let mut tr = Trigger::new(VoiceKind::Click);
-            tr.channel = MAX_CHANNELS;
+            tr.channel = usize::MAX;
             tr.accent = beat_in_bar == 0;
             tr.velocity = if tr.accent { 0.85 } else { 0.55 };
             self.start_voice(tr);
         }
 
-        if let Some((pi, local)) = Self::resolve_step(project, triggered) {
-            self.last_local_step = local;
-            let pattern = &project.patterns[pi];
-            let any_solo = project.channels.iter().any(|c| c.solo);
-            for (ci, channel) in project.channels.iter().enumerate() {
-                if channel.mute || (any_solo && !channel.solo) {
-                    continue;
-                }
-                // Notes mélodiques du Piano Roll (déclenchées à leur pas de début).
-                for note in pattern.notes.get(ci).into_iter().flatten() {
-                    if note.start != local {
+        let count = if project.song_mode {
+            project.arrangement.len()
+        } else {
+            1
+        };
+        for clip_index in 0..count {
+            if let Some((pi, local)) = Self::resolve_step(project, triggered, clip_index) {
+                self.last_local_step = local;
+                let pattern = &project.patterns[pi];
+                let any_solo = project.channels.iter().any(|c| c.solo);
+                for (ci, channel) in project.channels.iter().enumerate() {
+                    if channel.mute || (any_solo && !channel.solo) {
                         continue;
                     }
-                    let mut tr = Trigger::new(voice_kind(channel.kind));
-                    tr.channel = ci;
-                    tr.frequency = note.frequency();
-                    tr.hold_secs = step_secs * note.length as f32;
-                    tr.velocity = note.velocity;
-                    tr.pan = 0.0;
-                    tr.pitch_semitones = channel.pitch;
-                    tr.synth = channel.synth;
-                    tr.tone = channel.tone;
-                    self.start_voice(tr);
-                }
-                let Some(step) = pattern
-                    .lanes
-                    .get(ci)
-                    .and_then(|lane| lane.get(local))
-                    .copied()
-                else {
-                    continue;
-                };
-                if !step.on || !self.roll(step.probability) {
-                    continue;
-                }
-
-                let mut glide_from = None;
-                if channel.kind == ChannelKind::Bass808 {
-                    let base = 55.0 * 2.0f32.powf(channel.pitch / 12.0);
-                    if self.last_bass.len() <= ci {
-                        self.last_bass.resize(ci + 1, (0.0, 0.0));
+                    // Notes mélodiques du Piano Roll (déclenchées à leur pas de début).
+                    for note in pattern.notes.get(ci).into_iter().flatten() {
+                        if note.start != local {
+                            continue;
+                        }
+                        let mut tr = Trigger::new(voice_kind(channel.kind));
+                        tr.channel = ci;
+                        tr.frequency = note.frequency();
+                        tr.hold_secs = step_secs * note.length as f32;
+                        tr.velocity = note.velocity;
+                        tr.pan = 0.0;
+                        tr.pitch_semitones = channel.pitch;
+                        tr.synth = channel.synth;
+                        tr.tone = channel.tone;
+                        self.start_voice(tr);
                     }
-                    let (prev_hz, prev_pos) = self.last_bass[ci];
-                    if prev_hz > 0.0
-                        && self.position_samples - prev_pos < self.sample_rate as f64 * 2.0
-                    {
-                        glide_from = Some(prev_hz);
+                    let Some(step) = pattern
+                        .lanes
+                        .get(ci)
+                        .and_then(|lane| lane.get(local))
+                        .copied()
+                    else {
+                        continue;
+                    };
+                    if !step.on || !self.roll(step.probability) {
+                        continue;
                     }
-                    self.last_bass[ci] = (base, self.position_samples);
-                }
 
-                let sample = samples.get(&channel.id).cloned();
-                let ratchet = step.ratchet.clamp(1, 4) as usize;
-                for r in 0..ratchet {
-                    let mut tr = Trigger::new(voice_kind(channel.kind));
-                    tr.velocity = step.velocity;
-                    tr.channel = ci;
-                    tr.synth = channel.synth;
-                    tr.tone = channel.tone;
-                    tr.pitch_semitones = channel.pitch;
-                    tr.pan = 0.0;
-                    tr.delay_secs =
-                        step.shift * step_secs + r as f32 * (step_secs / ratchet.max(1) as f32);
-                    if let Some(s) = &sample {
-                        tr.sample = Some(std::sync::Arc::clone(&s.samples));
-                        tr.sample_rate = s.sample_rate as f32;
+                    let mut glide_from = None;
+                    if channel.kind == ChannelKind::Bass808 {
+                        let base = 55.0 * 2.0f32.powf(channel.pitch / 12.0);
+                        if self.last_bass.len() <= ci {
+                            self.last_bass.resize(ci + 1, (0.0, 0.0));
+                        }
+                        let (prev_hz, prev_pos) = self.last_bass[ci];
+                        if prev_hz > 0.0
+                            && self.position_samples - prev_pos < self.sample_rate as f64 * 2.0
+                        {
+                            glide_from = Some(prev_hz);
+                        }
+                        self.last_bass[ci] = (base, self.position_samples);
                     }
-                    tr.glide_from = glide_from;
-                    self.start_voice(tr);
+
+                    let sample = samples.get(&channel.id).cloned();
+                    let ratchet = step.ratchet.clamp(1, 4) as usize;
+                    for r in 0..ratchet {
+                        let mut tr = Trigger::new(voice_kind(channel.kind));
+                        tr.velocity = step.velocity;
+                        tr.channel = ci;
+                        tr.synth = channel.synth;
+                        tr.tone = channel.tone;
+                        tr.pitch_semitones = channel.pitch;
+                        tr.pan = 0.0;
+                        tr.delay_secs =
+                            step.shift * step_secs + r as f32 * (step_secs / ratchet.max(1) as f32);
+                        if let Some(s) = &sample {
+                            tr.sample = Some(std::sync::Arc::clone(&s.samples));
+                            tr.sample_rate = s.sample_rate as f32;
+                        }
+                        tr.glide_from = glide_from;
+                        self.start_voice(tr);
+                    }
                 }
-
-
             }
         }
-
         self.global_step = self.global_step.wrapping_add(1);
         let swing = project.swing.clamp(0.0, 0.7) as f64 * 0.5 * sps;
         let interval = if triggered % 2 == 0 {
@@ -280,7 +290,9 @@ impl Sequencer {
         let mut channel_peaks = [0.0f32; MAX_CHANNELS];
 
         for frame in out.chunks_exact_mut(2) {
-            let can_trigger = self.stop_at_samples.is_none_or(|s| self.position_samples < s);
+            let can_trigger = self
+                .stop_at_samples
+                .is_none_or(|s| self.position_samples < s);
             if self.samples_until_next <= 0.0 {
                 if can_trigger && self.samples_until_next <= 0.0 {
                     self.trigger_step(project, samples, metronome);
@@ -297,18 +309,31 @@ impl Sequencer {
                 if v.active {
                     let (vl, vr) = v.next();
                     let c = v.channel();
-                    if c < MAX_CHANNELS { buses[c][0] += vl; buses[c][1] += vr; }
-                    else { l += vl; r += vr; }
+                    if c < MAX_CHANNELS {
+                        buses[c][0] += vl;
+                        buses[c][1] += vr;
+                    } else if let Some(ch) = project.channels.get(c) {
+                        if !ch.mute && (!any_solo || ch.solo) {
+                            l += vl * ch.volume * (1.0 - ch.pan.max(0.0));
+                            r += vr * ch.volume * (1.0 + ch.pan.min(0.0));
+                        }
+                    } else {
+                        l += vl;
+                        r += vr;
+                    }
                 }
             }
             for (ci, ch) in project.channels.iter().take(MAX_CHANNELS).enumerate() {
                 let dry = buses[ci];
                 let echo = self.delay[ci][self.delay_pos];
                 self.delay[ci][self.delay_pos] = [dry[0] + echo[0] * 0.35, dry[1] + echo[1] * 0.35];
-                if ch.mute || (any_solo && !ch.solo) { continue; }
+                if ch.mute || (any_solo && !ch.solo) {
+                    continue;
+                }
                 let vl = (dry[0] + echo[0] * ch.delay_mix) * ch.volume * (1.0 - ch.pan.max(0.0));
                 let vr = (dry[1] + echo[1] * ch.delay_mix) * ch.volume * (1.0 + ch.pan.min(0.0));
-                l += vl; r += vr;
+                l += vl;
+                r += vr;
                 channel_peaks[ci] = channel_peaks[ci].max(vl.abs()).max(vr.abs());
             }
             self.delay_pos = (self.delay_pos + 1) % self.delay[0].len();

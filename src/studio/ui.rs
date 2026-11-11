@@ -41,6 +41,7 @@ pub struct StudioUiState {
     /// Note en cours de déplacement dans le Piano Roll (index dans la lane du canal sélectionné).
     pub note_drag: Option<(usize, Note, bool)>,
     pub piano_scroll: Option<f32>,
+    pub clip_drag: Option<(usize, usize)>,
 }
 
 impl Default for StudioUiState {
@@ -54,6 +55,7 @@ impl Default for StudioUiState {
             show_tutorial: false,
             note_drag: None,
             piano_scroll: Some(430.0),
+            clip_drag: None,
         }
     }
 }
@@ -85,7 +87,11 @@ pub fn render(ui: &mut egui::Ui, state: &mut StudioState) -> Vec<StudioAction> {
         .min_size(200.0)
         .max_size(360.0)
         .show(ui, |ui| {
-            egui::ScrollArea::vertical().id_salt("studio_inspector").show(ui, |ui| { side_panel(ui, &theme, state, &mut actions); });
+            egui::ScrollArea::vertical()
+                .id_salt("studio_inspector")
+                .show(ui, |ui| {
+                    side_panel(ui, &theme, state, &mut actions);
+                });
         });
 
     egui::CentralPanel::default().show(ui, |ui| match state.ui.tab {
@@ -764,13 +770,32 @@ fn note_name(pitch: u8) -> String {
 fn piano_roll(ui: &mut egui::Ui, theme: &ARXFUNDTheme, state: &mut StudioState) {
     ui.horizontal_wrapped(|ui| {
         ui.heading("Piano Roll");
-        egui::ComboBox::from_id_salt("piano_channel").selected_text(state.project.channels.get(state.ui.selected_channel).map(|c| c.name.as_str()).unwrap_or("Instrument"))
-            .show_ui(ui, |ui| { for (i, ch) in state.project.channels.iter().enumerate() { if ch.kind.is_melodic() { ui.selectable_value(&mut state.ui.selected_channel, i, &ch.name); } } });
+        egui::ComboBox::from_id_salt("piano_channel")
+            .selected_text(
+                state
+                    .project
+                    .channels
+                    .get(state.ui.selected_channel)
+                    .map(|c| c.name.as_str())
+                    .unwrap_or("Instrument"),
+            )
+            .show_ui(ui, |ui| {
+                for (i, ch) in state.project.channels.iter().enumerate() {
+                    if ch.kind.is_melodic() {
+                        ui.selectable_value(&mut state.ui.selected_channel, i, &ch.name);
+                    }
+                }
+            });
         ui.label("Glisser : déplacer · Maj + glisser : durée · Clic droit : supprimer");
     });
     let ci = state.ui.selected_channel;
-    let Some(channel) = state.project.channels.get(ci) else { return; };
-    if !channel.kind.is_melodic() { ui.label("Choisissez Basse 808 ou Synthé dans le menu Instrument."); return; }
+    let Some(channel) = state.project.channels.get(ci) else {
+        return;
+    };
+    if !channel.kind.is_melodic() {
+        ui.label("Choisissez Basse 808 ou Synthé dans le menu Instrument.");
+        return;
+    }
     let c = channel.color;
     let color = Color32::from_rgb(c[0], c[1], c[2]);
     let steps = state.project.steps;
@@ -779,10 +804,20 @@ fn piano_roll(ui: &mut egui::Ui, theme: &ARXFUNDTheme, state: &mut StudioState) 
     const LOW: u8 = 24;
     const HIGH: u8 = 96;
     ui.add_space(8.0);
-    let mut scroll = egui::ScrollArea::both().id_salt("piano_grid").auto_shrink([false, false]);
-    if let Some(offset) = state.ui.piano_scroll.take() { scroll = scroll.vertical_scroll_offset(offset); }
+    let mut scroll = egui::ScrollArea::both()
+        .id_salt("piano_grid")
+        .auto_shrink([false, false]);
+    if let Some(offset) = state.ui.piano_scroll.take() {
+        scroll = scroll.vertical_scroll_offset(offset);
+    }
     scroll.show(ui, |ui| {
-        let (whole, response) = ui.allocate_exact_size(Vec2::new(64.0 + steps as f32 * step_w, (HIGH - LOW + 1) as f32 * ROW + 24.0), Sense::click_and_drag());
+        let (whole, response) = ui.allocate_exact_size(
+            Vec2::new(
+                64.0 + steps as f32 * step_w,
+                (HIGH - LOW + 1) as f32 * ROW + 24.0,
+            ),
+            Sense::click_and_drag(),
+        );
         let grid = Rect::from_min_max(whole.min + Vec2::new(64.0, 24.0), whole.max);
         let painter = ui.painter_at(whole);
         painter.rect_filled(whole, 4.0, theme.colors.bg_secondary);
@@ -790,41 +825,122 @@ fn piano_roll(ui: &mut egui::Ui, theme: &ARXFUNDTheme, state: &mut StudioState) 
             let y = grid.top() + (HIGH - pitch) as f32 * ROW;
             let black = matches!(pitch % 12, 1 | 3 | 6 | 8 | 10);
             let row = Rect::from_min_size(Pos2::new(grid.left(), y), Vec2::new(grid.width(), ROW));
-            painter.rect_filled(row, 0.0, if black { theme.colors.bg_primary } else { theme.colors.bg_secondary });
+            painter.rect_filled(
+                row,
+                0.0,
+                if black {
+                    theme.colors.bg_primary
+                } else {
+                    theme.colors.bg_secondary
+                },
+            );
             let key = Rect::from_min_size(Pos2::new(whole.left(), y), Vec2::new(60.0, ROW - 1.0));
-            painter.rect_filled(key, 1.0, if black { theme.colors.bg_surface } else { Color32::from_rgb(190, 199, 214) });
-            if pitch % 12 == 0 { painter.text(key.center(), Align2::CENTER_CENTER, note_name(pitch), FontId::proportional(11.0), theme.colors.bg_primary); }
+            painter.rect_filled(
+                key,
+                1.0,
+                if black {
+                    theme.colors.bg_surface
+                } else {
+                    Color32::from_rgb(190, 199, 214)
+                },
+            );
+            if pitch % 12 == 0 {
+                painter.text(
+                    key.center(),
+                    Align2::CENTER_CENTER,
+                    note_name(pitch),
+                    FontId::proportional(11.0),
+                    theme.colors.bg_primary,
+                );
+            }
         }
         for step in 0..=steps {
             let x = grid.left() + step as f32 * step_w;
-            painter.line_segment([Pos2::new(x, grid.top()), Pos2::new(x, grid.bottom())], Stroke::new(if step % 4 == 0 { 1.3 } else { 0.5 }, theme.colors.separator));
-            if step % 4 == 0 { painter.text(Pos2::new(x + 4.0, whole.top() + 5.0), Align2::LEFT_TOP, format!("{}", step / 4 + 1), FontId::proportional(11.0), theme.colors.text_secondary); }
+            painter.line_segment(
+                [Pos2::new(x, grid.top()), Pos2::new(x, grid.bottom())],
+                Stroke::new(
+                    if step % 4 == 0 { 1.3 } else { 0.5 },
+                    theme.colors.separator,
+                ),
+            );
+            if step % 4 == 0 {
+                painter.text(
+                    Pos2::new(x + 4.0, whole.top() + 5.0),
+                    Align2::LEFT_TOP,
+                    format!("{}", step / 4 + 1),
+                    FontId::proportional(11.0),
+                    theme.colors.text_secondary,
+                );
+            }
         }
-        let note_rect = |n: &Note| Rect::from_min_size(Pos2::new(grid.left() + n.start as f32 * step_w, grid.top() + (HIGH as f32 - n.pitch as f32) * ROW), Vec2::new(n.length as f32 * step_w - 2.0, ROW - 2.0));
+        let note_rect = |n: &Note| {
+            Rect::from_min_size(
+                Pos2::new(
+                    grid.left() + n.start as f32 * step_w,
+                    grid.top() + (HIGH as f32 - n.pitch as f32) * ROW,
+                ),
+                Vec2::new(n.length as f32 * step_w - 2.0, ROW - 2.0),
+            )
+        };
         for note in state.project.notes(ci) {
             let rect = note_rect(note);
             painter.rect_filled(rect, 3.0, color);
-            painter.text(rect.left_center() + Vec2::new(4.0, 0.0), Align2::LEFT_CENTER, note_name(note.pitch), FontId::proportional(11.0), theme.colors.bg_primary);
+            painter.text(
+                rect.left_center() + Vec2::new(4.0, 0.0),
+                Align2::LEFT_CENTER,
+                note_name(note.pitch),
+                FontId::proportional(11.0),
+                theme.colors.bg_primary,
+            );
         }
         if state.is_playing() {
             let x = grid.left() + state.playhead_step() as f32 * step_w;
-            painter.line_segment([Pos2::new(x, grid.top()), Pos2::new(x, grid.bottom())], Stroke::new(2.0, theme.colors.accent_secondary));
+            painter.line_segment(
+                [Pos2::new(x, grid.top()), Pos2::new(x, grid.bottom())],
+                Stroke::new(2.0, theme.colors.accent_secondary),
+            );
         }
-        if let Some(pos) = response.interact_pointer_pos().filter(|p| grid.contains(*p)) {
+        if let Some(pos) = response
+            .interact_pointer_pos()
+            .filter(|p| grid.contains(*p))
+        {
             let step = ((pos.x - grid.left()) / step_w).floor() as usize;
-            let pitch = HIGH.saturating_sub(((pos.y - grid.top()) / ROW).floor() as u8).max(LOW);
-            let hit = state.project.notes(ci).iter().position(|n| note_rect(n).contains(pos));
+            let pitch = HIGH
+                .saturating_sub(((pos.y - grid.top()) / ROW).floor() as u8)
+                .max(LOW);
+            let hit = state
+                .project
+                .notes(ci)
+                .iter()
+                .position(|n| note_rect(n).contains(pos));
             if response.secondary_clicked() {
-                if let Some(i) = hit { state.push_undo(); state.project.notes_mut(ci).remove(i); state.mark_dirty(); }
+                if let Some(i) = hit {
+                    state.push_undo();
+                    state.project.notes_mut(ci).remove(i);
+                    state.mark_dirty();
+                }
             } else if response.clicked() && hit.is_none() {
-                state.push_undo(); state.project.notes_mut(ci).push(Note { pitch, start: step.min(steps - 1), length: 1, velocity: 0.85 }); state.mark_dirty();
+                state.push_undo();
+                state.project.notes_mut(ci).push(Note {
+                    pitch,
+                    start: step.min(steps - 1),
+                    length: 1,
+                    velocity: 0.85,
+                });
+                state.mark_dirty();
             }
         }
         if response.drag_started() {
             if let Some(origin) = ui.input(|i| i.pointer.press_origin()) {
-                if let Some(i) = state.project.notes(ci).iter().position(|n| note_rect(n).contains(origin)) {
+                if let Some(i) = state
+                    .project
+                    .notes(ci)
+                    .iter()
+                    .position(|n| note_rect(n).contains(origin))
+                {
                     let note = state.project.notes(ci)[i].clone();
-                    state.push_undo(); state.ui.note_drag = Some((i, note, ui.input(|i| i.modifiers.shift)));
+                    state.push_undo();
+                    state.ui.note_drag = Some((i, note, ui.input(|i| i.modifiers.shift)));
                 }
             }
         }
@@ -833,16 +949,26 @@ fn piano_roll(ui: &mut egui::Ui, theme: &ARXFUNDTheme, state: &mut StudioState) 
                 let dx = (response.drag_delta().x / step_w).round() as isize;
                 let dy = (response.drag_delta().y / ROW).round() as i16;
                 if let Some(note) = state.project.notes_mut(ci).get_mut(i) {
-                    if resize { note.length = (original.length as isize + dx).clamp(1, (steps - note.start) as isize) as usize; }
-                    else { note.start = (original.start as isize + dx).clamp(0, steps.saturating_sub(original.length) as isize) as usize; note.pitch = (original.pitch as i16 - dy).clamp(LOW as i16, HIGH as i16) as u8; }
+                    if resize {
+                        note.length = (original.length as isize + dx)
+                            .clamp(1, (steps - note.start) as isize)
+                            as usize;
+                    } else {
+                        note.start = (original.start as isize + dx)
+                            .clamp(0, steps.saturating_sub(original.length) as isize)
+                            as usize;
+                        note.pitch =
+                            (original.pitch as i16 - dy).clamp(LOW as i16, HIGH as i16) as u8;
+                    }
                 }
                 state.mark_dirty();
             }
         }
-        if response.drag_stopped() { state.ui.note_drag = None; }
+        if response.drag_stopped() {
+            state.ui.note_drag = None;
+        }
     });
     // ScrollArea persists its own offset after the initial framing.
-
 }
 
 // ---------------------------------------------------------------------------
@@ -969,41 +1095,82 @@ fn playlist(ui: &mut egui::Ui, theme: &ARXFUNDTheme, state: &mut StudioState) {
             .color(theme.colors.text_muted),
     );
 
-    // Ruler + clips (lecture seule visuelle de l'arrangement réel).
-    let width = ui.available_width().max(200.0);
-    let (rect, _) = ui.allocate_exact_size(Vec2::new(width, 60.0), Sense::hover());
-    let painter = ui.painter_at(rect);
-    painter.rect_filled(rect, 4.0, theme.colors.bg_secondary);
-    let px_per_step = rect.width() / total.max(1) as f32;
-    for clip in &state.project.arrangement {
-        let x0 = rect.left() + clip.start_step as f32 * px_per_step;
-        let w = (clip.length_steps as f32 * px_per_step).max(2.0);
-        let color = state
-            .project
-            .patterns
-            .get(clip.pattern)
-            .map(|_| theme.colors.accent_primary)
-            .unwrap_or(theme.colors.separator);
-        painter.rect_filled(
-            Rect::from_min_size(Pos2::new(x0, rect.top() + 18.0), Vec2::new(w, 30.0)),
-            3.0,
-            color,
-        );
-        painter.text(
-            Pos2::new(x0 + 4.0, rect.top() + 24.0),
-            Align2::LEFT_TOP,
-            format!("P{}", clip.pattern + 1),
-            FontId::monospace(9.0),
-            Color32::WHITE,
-        );
-    }
-    painter.text(
-        Pos2::new(rect.left() + 2.0, rect.top() + 2.0),
-        Align2::LEFT_TOP,
-        "Arrangement (Mode Song)",
-        FontId::proportional(10.0),
-        theme.colors.text_secondary,
-    );
+    ui.label("Glissez un clip pour le déplacer. Les clips superposés sont mixés ensemble.");
+    let timeline_steps = total.max(64) + 16;
+    let px_per_step = 14.0;
+    egui::ScrollArea::both()
+        .id_salt("arrangement_timeline")
+        .show(ui, |ui| {
+            let (rect, response) = ui.allocate_exact_size(
+                Vec2::new(
+                    timeline_steps as f32 * px_per_step,
+                    40.0 + state.project.arrangement.len().max(3) as f32 * 48.0,
+                ),
+                Sense::click_and_drag(),
+            );
+            let painter = ui.painter_at(rect);
+            painter.rect_filled(rect, 4.0, theme.colors.bg_secondary);
+            for step in (0..timeline_steps).step_by(4) {
+                let x = rect.left() + step as f32 * px_per_step;
+                painter.line_segment(
+                    [Pos2::new(x, rect.top() + 24.0), Pos2::new(x, rect.bottom())],
+                    Stroke::new(1.0, theme.colors.separator),
+                );
+                painter.text(
+                    Pos2::new(x + 3.0, rect.top() + 4.0),
+                    Align2::LEFT_TOP,
+                    format!("{}", step + 1),
+                    FontId::proportional(11.0),
+                    theme.colors.text_secondary,
+                );
+            }
+            let clip_rect = |i: usize, start: usize, length: usize| {
+                Rect::from_min_size(
+                    Pos2::new(
+                        rect.left() + start as f32 * px_per_step,
+                        rect.top() + 30.0 + i as f32 * 48.0,
+                    ),
+                    Vec2::new(length as f32 * px_per_step - 2.0, 38.0),
+                )
+            };
+            for (i, clip) in state.project.arrangement.iter().enumerate() {
+                let r = clip_rect(i, clip.start_step, clip.length_steps);
+                painter.rect_filled(r, 5.0, theme.colors.accent_primary);
+                painter.text(
+                    r.left_center() + Vec2::new(8.0, 0.0),
+                    Align2::LEFT_CENTER,
+                    &state.project.patterns[clip.pattern].name,
+                    FontId::proportional(12.0),
+                    Color32::WHITE,
+                );
+            }
+            if response.drag_started() {
+                if let Some(pos) = ui.input(|i| i.pointer.press_origin()) {
+                    let hit = state
+                        .project
+                        .arrangement
+                        .iter()
+                        .enumerate()
+                        .find(|(i, c)| clip_rect(*i, c.start_step, c.length_steps).contains(pos))
+                        .map(|(i, c)| (i, c.start_step));
+                    if let Some(hit) = hit {
+                        state.push_undo();
+                        state.ui.clip_drag = Some(hit);
+                    }
+                }
+            }
+            if response.dragged() {
+                if let Some((i, start)) = state.ui.clip_drag {
+                    state.project.arrangement[i].start_step =
+                        (start as isize + (response.drag_delta().x / px_per_step).round() as isize)
+                            .max(0) as usize;
+                    state.mark_dirty();
+                }
+            }
+            if response.drag_stopped() {
+                state.ui.clip_drag = None;
+            }
+        });
 }
 
 // ---------------------------------------------------------------------------
@@ -1059,8 +1226,11 @@ fn mixer(ui: &mut egui::Ui, theme: &ARXFUNDTheme, state: &mut StudioState) {
                         ui.spacing_mut().slider_width = 80.0;
                         let ch = &mut state.project.channels[i];
                         let pan = ui.add(egui::Slider::new(&mut ch.pan, -1.0..=1.0).text("Pan"));
-                        let delay = ui.add(egui::Slider::new(&mut ch.delay_mix, 0.0..=0.8).text("Écho"));
-                        if pan.changed() || delay.changed() { state.mark_dirty(); }
+                        let delay =
+                            ui.add(egui::Slider::new(&mut ch.delay_mix, 0.0..=0.8).text("Écho"));
+                        if pan.changed() || delay.changed() {
+                            state.mark_dirty();
+                        }
                         let level = levels.get(i).copied().unwrap_or(0.0);
                         audio_meter(ui, theme, level, level);
 
@@ -1114,7 +1284,11 @@ fn mixer(ui: &mut egui::Ui, theme: &ARXFUNDTheme, state: &mut StudioState) {
                     {
                         state.mark_dirty();
                     }
-                    let peak = state.engine.as_ref().map(|e| e.master_level()).unwrap_or(0.0);
+                    let peak = state
+                        .engine
+                        .as_ref()
+                        .map(|e| e.master_level())
+                        .unwrap_or(0.0);
                     audio_meter(ui, theme, peak, peak);
                     ui.label(
                         RichText::new(format!("{:.0} %", state.project.master_volume * 100.0))

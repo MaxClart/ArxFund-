@@ -278,7 +278,11 @@ impl Channel {
             1.0
         };
         self.synth.sanitize();
-        self.delay_mix = if self.delay_mix.is_finite() { self.delay_mix.clamp(0.0, 0.8) } else { 0.0 };
+        self.delay_mix = if self.delay_mix.is_finite() {
+            self.delay_mix.clamp(0.0, 0.8)
+        } else {
+            0.0
+        };
         if self.name.trim().is_empty() {
             self.name = self.kind.label().to_string();
         }

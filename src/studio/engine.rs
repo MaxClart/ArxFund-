@@ -389,7 +389,9 @@ fn render_loop(
         if !playing {
             shared.cpu_permille.store(0, Ordering::Relaxed);
             shared.master_peak.store(0, Ordering::Relaxed);
-            for peak in &shared.channel_peaks { peak.store(0, Ordering::Relaxed); }
+            for peak in &shared.channel_peaks {
+                peak.store(0, Ordering::Relaxed);
+            }
             thread::sleep(Duration::from_millis(5));
             continue;
         }

@@ -55,65 +55,90 @@ pub fn render_to_wav(
     if options.bars == 0 {
         return Err("Le nombre de mesures doit être supérieur à 0".to_string());
     }
+    if !matches!(options.bit_depth, 16 | 24 | 32) {
+        return Err("Profondeur WAV attendue : 16, 24 ou 32 bits".into());
+    }
+    if !options.tail_secs.is_finite() || options.tail_secs < 0.0 {
+        return Err("Durée de résonance invalide".into());
+    }
     let rate = options.sample_rate.clamp(8_000, 192_000);
     let bar_steps = STEPS_PER_BEAT * project.time_sig_num.max(1) as usize;
     let seq_probe = Sequencer::new(rate as f32);
     let sps = seq_probe.samples_per_step(project);
     let musical_frames = (options.bars as f64 * bar_steps as f64 * sps).round() as u64;
     let tail_frames = (options.tail_secs.max(0.0) as f64 * rate as f64).round() as u64;
-    let total_frames = musical_frames + tail_frames;
+    let total_frames = musical_frames
+        .checked_add(tail_frames)
+        .ok_or("Export trop long")?;
+    if total_frames > rate as u64 * 60 * 60 * 4 {
+        return Err("Export limité à quatre heures".into());
+    }
     if total_frames == 0 {
         return Err("Durée d'export nulle".to_string());
     }
 
+    // Two deterministic passes: bounded memory, even for a long arrangement.
     let mut seq = Sequencer::new(rate as f32);
     seq.set_stop_at(Some(musical_frames as f64));
-    let mut samples: Vec<f32> = vec![0.0; (total_frames as usize).saturating_mul(2)];
-    let chunk_frames = 4096usize;
+    let mut buffer = vec![0.0f32; 4096 * 2];
     let mut done = 0u64;
     let mut peak = 0.0f32;
     while done < total_frames {
-        let frames = ((total_frames - done) as usize).min(chunk_frames);
-        let start = done as usize * 2;
-        let end = start + frames * 2;
-        seq.render_block(project, bank, false, &mut samples[start..end]);
-        for s in &samples[start..end] {
-            peak = peak.max(s.abs());
+        let frames = (total_frames - done).min(4096) as usize;
+        seq.render_block(project, bank, false, &mut buffer[..frames * 2]);
+        for sample in &buffer[..frames * 2] {
+            peak = peak.max(sample.abs());
         }
         done += frames as u64;
-        progress(done as f32 / total_frames as f32);
+        progress(0.5 * done as f32 / total_frames as f32);
     }
-
     let gain = if options.normalize && peak > 1e-6 {
         0.98 / peak
     } else {
         1.0
     };
     let master_peak = (peak * gain).min(1.0);
-
     if let Some(parent) = path.parent() {
         std::fs::create_dir_all(parent).map_err(|e| e.to_string())?;
     }
-    let spec = WavSpec {
-        channels: 2,
-        sample_rate: rate,
-        bits_per_sample: options.bit_depth,
-        sample_format: HoundSampleFormat::Int,
-    };
-    let mut writer = WavWriter::create(path, spec).map_err(|e| format!("WAV : {e}"))?;
-    let mut written = 0u64;
-    for frame in samples.chunks_exact(2) {
-        let l = (frame[0] * gain).clamp(-1.0, 1.0);
-        let r = (frame[1] * gain).clamp(-1.0, 1.0);
-        write_frame(&mut writer, l, r, options.bit_depth)?;
-        written += 1;
-        if written % 8192 == 0 {
-            progress((written as f32 / total_frames as f32).min(1.0));
+    let temporary = path.with_extension(format!(
+        "{}.wav.tmp",
+        crate::studio::project::unique_id("export")
+    ));
+    let result = (|| -> Result<(), String> {
+        let spec = WavSpec {
+            channels: 2,
+            sample_rate: rate,
+            bits_per_sample: options.bit_depth,
+            sample_format: HoundSampleFormat::Int,
+        };
+        let mut writer = WavWriter::create(&temporary, spec).map_err(|e| format!("WAV : {e}"))?;
+        seq.reset();
+        done = 0;
+        while done < total_frames {
+            let frames = (total_frames - done).min(4096) as usize;
+            seq.render_block(project, bank, false, &mut buffer[..frames * 2]);
+            for frame in buffer[..frames * 2].chunks_exact(2) {
+                write_frame(
+                    &mut writer,
+                    (frame[0] * gain).clamp(-1.0, 1.0),
+                    (frame[1] * gain).clamp(-1.0, 1.0),
+                    options.bit_depth,
+                )?;
+            }
+            done += frames as u64;
+            progress(0.5 + 0.5 * done as f32 / total_frames as f32);
         }
+        writer
+            .finalize()
+            .map_err(|e| format!("Finalisation WAV : {e}"))?;
+        std::fs::rename(&temporary, path).map_err(|e| format!("Publication WAV : {e}"))?;
+        Ok(())
+    })();
+    if result.is_err() {
+        let _ = std::fs::remove_file(&temporary);
     }
-    writer
-        .finalize()
-        .map_err(|e| format!("Finalisation WAV : {e}"))?;
+    result?;
     progress(1.0);
 
     Ok(ExportResult {

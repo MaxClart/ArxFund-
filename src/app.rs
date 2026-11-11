@@ -15,9 +15,7 @@ use crate::paths;
 use crate::studio::engine::StudioEngine;
 use crate::studio::state::{StudioAction, StudioState};
 use crate::studio::ui as studio_ui;
-use crate::ui::components::{
-    button, section_header,
-};
+use crate::ui::components::{button, section_header};
 use crate::ui::player::{home, library, player_bar, playlists, sidebar};
 use crate::ui::theme::ARXFUNDTheme;
 
@@ -664,7 +662,9 @@ impl StudioApp {
                 self.next_track();
             }
         }
-        if let Some(error) = self.engine.take_error() { self.error_msg = Some(error); }
+        if let Some(error) = self.engine.take_error() {
+            self.error_msg = Some(error);
+        }
         self.poll_import();
         let export_actions = self.studio.poll_export();
         self.handle_studio_actions(export_actions);
@@ -736,7 +736,13 @@ impl StudioApp {
 
         self.render_about(&ctx);
 
-        ctx.request_repaint_after(std::time::Duration::from_millis(if self.engine.is_playing() || self.studio.is_playing() { 33 } else { 250 }));
+        ctx.request_repaint_after(std::time::Duration::from_millis(
+            if self.engine.is_playing() || self.studio.is_playing() {
+                33
+            } else {
+                250
+            },
+        ));
     }
 }
 

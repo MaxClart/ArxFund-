@@ -149,7 +149,10 @@ impl AudioEngine {
                         shared_cb
                             .last_seen_epoch
                             .store(epoch_now, Ordering::Relaxed);
-                        shared_cb.frames_played.store(shared_cb.position_base.load(Ordering::Relaxed), Ordering::Relaxed);
+                        shared_cb.frames_played.store(
+                            shared_cb.position_base.load(Ordering::Relaxed),
+                            Ordering::Relaxed,
+                        );
                     }
                     if !shared_cb.playing.load(Ordering::Relaxed) {
                         for s in data.iter_mut() {
@@ -462,19 +465,31 @@ fn decoder_loop(shared: Arc<EngineShared>, rx: Receiver<Command>, device_rate: u
                         };
                         match fmt.seek(SeekMode::Coarse, to) {
                             Ok(result) => {
-                                if let Some(dec) = decoder.as_mut() { dec.reset(); }
-                                let actual = fmt.tracks().iter().find(|t| t.id == result.track_id)
+                                if let Some(dec) = decoder.as_mut() {
+                                    dec.reset();
+                                }
+                                let actual = fmt
+                                    .tracks()
+                                    .iter()
+                                    .find(|t| t.id == result.track_id)
                                     .and_then(|t| t.time_base)
-                                    .map(|tb| result.actual_ts.get() as f64 * tb.numer.get() as f64 / tb.denom.get() as f64)
+                                    .map(|tb| {
+                                        result.actual_ts.get() as f64 * tb.numer.get() as f64
+                                            / tb.denom.get() as f64
+                                    })
                                     .unwrap_or(secs.max(0.0));
                                 pending.clear();
                                 pending_pos = 0;
-                                shared.position_base.store((actual * device_rate as f64) as u64, Ordering::Relaxed);
+                                shared
+                                    .position_base
+                                    .store((actual * device_rate as f64) as u64, Ordering::Relaxed);
                                 shared.finished.store(false, Ordering::Relaxed);
                                 shared.ended.store(false, Ordering::Relaxed);
                                 shared.epoch.fetch_add(1, Ordering::AcqRel);
                             }
-                            Err(e) => *shared.error.lock() = Some(format!("Déplacement impossible : {e}")),
+                            Err(e) => {
+                                *shared.error.lock() = Some(format!("Déplacement impossible : {e}"))
+                            }
                         }
                     }
                 }
@@ -497,7 +512,9 @@ fn decoder_loop(shared: Arc<EngineShared>, rx: Receiver<Command>, device_rate: u
         }
         if pending_pos < pending.len() {
             pending_pos += shared.ring.write(&pending[pending_pos..]);
-            if pending_pos < pending.len() { thread::sleep(Duration::from_millis(2)); }
+            if pending_pos < pending.len() {
+                thread::sleep(Duration::from_millis(2));
+            }
             continue;
         }
         let Some(fmt) = format.as_mut() else {
