@@ -94,8 +94,8 @@ pub struct Radius {
     pub full: f32,   // cercle complet
 }
 
-impl Radius {
-    pub fn default() -> Self {
+impl Default for Radius {
+    fn default() -> Self {
         Self {
             small: 4.0,
             medium: 8.0,
@@ -117,8 +117,8 @@ pub struct Spacing {
     pub xxl: f32, // 48px
 }
 
-impl Spacing {
-    pub fn default() -> Self {
+impl Default for Spacing {
+    fn default() -> Self {
         Self {
             xs: 4.0,
             sm: 8.0,
@@ -144,8 +144,8 @@ pub struct Typography {
     pub mono_small: FontId, // Valeurs numériques petites
 }
 
-impl Typography {
-    pub fn default() -> Self {
+impl Default for Typography {
+    fn default() -> Self {
         Self {
             display: FontId::proportional(28.0),
             h1: FontId::proportional(18.0),
@@ -190,6 +190,8 @@ impl ARXFUNDTheme {
 pub fn apply_theme(ctx: &eframe::egui::Context, theme: &ARXFUNDTheme) {
     let mut style = (*ctx.style_of(eframe::egui::Theme::Dark)).clone();
     style.visuals = eframe::egui::Visuals::dark();
+    style.visuals.override_text_color = Some(theme.colors.text_primary);
+    style.visuals.widgets.noninteractive.fg_stroke.color = theme.colors.text_primary;
     style.visuals.panel_fill = theme.colors.bg_primary;
     style.visuals.window_fill = theme.colors.bg_panel;
     style.visuals.extreme_bg_color = theme.colors.bg_secondary;

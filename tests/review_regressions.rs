@@ -89,7 +89,7 @@ fn delay_changes_audio_and_resets_deterministically() {
     seq.render_block(&p, &SampleBank::new(), false, &mut out);
     seq.reset();
     seq.render_block(&p, &SampleBank::new(), false, &mut out);
-    assert_eq!(out, wet);
+    assert!(out == wet, "reset must clear all delay state");
 }
 #[test]
 fn export_stop_is_sample_exact_inside_a_block() {

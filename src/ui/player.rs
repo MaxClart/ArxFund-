@@ -40,7 +40,13 @@ pub fn sidebar(ui: &mut Ui, theme: &ARXFUNDTheme, app: &mut StudioApp) -> Option
         if ui
             .add_sized(
                 [ui.available_width(), 36.0],
-                egui::Button::new(label).selected(app.page == page),
+                egui::Button::new(label)
+                    .fill(if app.page == page {
+                        theme.colors.row_selected
+                    } else {
+                        Color32::TRANSPARENT
+                    })
+                    .selected(app.page == page),
             )
             .clicked()
         {

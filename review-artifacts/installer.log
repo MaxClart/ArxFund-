@@ -1,0 +1,62 @@
+==============================================
+  build-installer.ps1 - ARXFUND Installer
+==============================================
+
+[1/9] Vérification de l'environnement...
+  cargo   : C:\Users\Arthur\.cargo\bin\cargo.exe
+  rustc   : C:\Users\Arthur\.cargo\bin\rustc.exe
+  target  : x86_64-pc-windows-gnu présent
+  iscc    : C:\Users\Arthur\AppData\Local\Programs\Inno Setup 7\ISCC.exe
+  windres : C:\msys64\mingw64\bin\windres.exe (ressources Windows OK)
+
+[2/9] Compilation Release de ARXFUND (cargo build --release)...
+      Finished `release` profile [optimized] target(s) in 0.55s
+  Compilation réussie.
+
+[3/9] Vérification de ARXFUND.exe...
+  Trouvé : C:\Users\Arthur\Desktop\test claude\rust-music-studio\target\release\ARXFUND.exe (19.66 Mo)
+
+[4/9] Préparation des ressources...
+  Toutes les ressources obligatoires sont présentes.
+  DLL runtime Mingw trouvées.
+
+[5/9] Création du dossier de sortie dist/...
+  Dossier : C:\Users\Arthur\Desktop\test claude\rust-music-studio\dist
+
+[6/9] Compilation de l'installateur Inno Setup...
+  Installateur compilé avec succès.
+
+[7/9] Vérification du fichier d'installation...
+  Fichier final : C:\Users\Arthur\Desktop\test claude\rust-music-studio\dist\ARXFUND-Setup-x64.exe
+  Taille : 8.12 Mo
+
+[8/9] Vérifications complémentaires...
+  Taille de l'installateur cohérente.
+  Le désinstallateur sera créé automatiquement dans le dossier d'installation.
+
+[9/9] Terminé.
+
+==============================================
+  INSTALLATEUR GÉNÉRÉ AVEC SUCCÈS
+==============================================
+
+  Chemin        : C:\Users\Arthur\Desktop\test claude\rust-music-studio\dist\ARXFUND-Setup-x64.exe
+  Taille        : 8.12 Mo
+  Application   : ARXFUND v0.1.0
+  Exécutable    : ARXFUND.exe
+  Dossier cible : Program Files\ARXFUND (choisissible à l'installation)
+
+  Données utilisateur :
+    - %APPDATA%\ARXFUND (base de données, paramètres, pochettes)
+    - %USERPROFILE%\Musique\ARXFUND (projets, exports, samples, presets)
+
+  Pour installer sur un autre PC :
+    1. Copiez ARXFUND-Setup-x64.exe sur une clé USB.
+    2. Double-cliquez dessus sur le PC de destination.
+
+  Pour désinstaller :
+    Paramètres Windows → Applications → ARXFUND → Désinstaller.
+
+  Les données personnelles (projets, exports, presets) sont conservées.
+
+==============================================

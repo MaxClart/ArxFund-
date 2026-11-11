@@ -100,6 +100,11 @@ impl Sequencer {
         for v in &mut self.voices {
             v.active = false;
         }
+        for line in &mut self.delay {
+            line.fill([0.0; 2]);
+        }
+        self.delay_pos = 0;
+        self.steal_index = 0;
     }
 
     pub fn set_stop_at(&mut self, samples: Option<f64>) {

@@ -1,0 +1,8 @@
+    Blocking waiting for file lock on build directory
+warning: hard linking files in the incremental compilation cache failed. copying files instead. consider moving the cache directory to a file system which supports hard linking in session dir `\\?\C:\Users\Arthur\Desktop\test claude\rust-music-studio\target\debug\incremental\arxfund-2vbtwwkmlawga\s-ho21cihfck-14qyt7g-working`
+
+warning: `arxfund` (lib) generated 1 warning
+warning: hard linking files in the incremental compilation cache failed. copying files instead. consider moving the cache directory to a file system which supports hard linking in session dir `\\?\C:\Users\Arthur\Desktop\test claude\rust-music-studio\target\debug\incremental\ARXFUND-12eu25pzi0mqn\s-ho21ciuocb-1623588-working`
+
+warning: `arxfund` (bin "ARXFUND") generated 1 warning
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 5.20s

@@ -276,7 +276,7 @@ fn transport_bar(
             });
 
             ui.horizontal(|ui| {
-                if button_small(ui, theme, "💾 Enregistrer").clicked() {
+                if button_small(ui, theme, "Enregistrer").clicked() {
                     state.save();
                 }
                 if button_small(ui, theme, "Enregistrer sous…").clicked() {
@@ -488,7 +488,7 @@ fn channel_rack(ui: &mut egui::Ui, theme: &ARXFUNDTheme, state: &mut StudioState
         .auto_shrink([false, false])
         .max_height(ui.available_height() - 170.0)
         .show(ui, |ui| {
-            egui::Grid::new("channel_rack_grid")
+            egui::Grid::new("channel_rack_grid").min_col_width(24.0)
                 .spacing(Vec2::new(2.0, 2.0))
                 .show(ui, |ui| {
                     ui.label("");
@@ -938,16 +938,17 @@ fn piano_roll(ui: &mut egui::Ui, theme: &ARXFUNDTheme, state: &mut StudioState) 
                     .iter()
                     .position(|n| note_rect(n).contains(origin))
                 {
-                    let note = state.project.notes(ci)[i].clone();
+                    let note = state.project.notes(ci)[i];
                     state.push_undo();
                     state.ui.note_drag = Some((i, note, ui.input(|i| i.modifiers.shift)));
                 }
             }
         }
         if response.dragged() {
-            if let Some((i, original, resize)) = state.ui.note_drag.clone() {
-                let dx = (response.drag_delta().x / step_w).round() as isize;
-                let dy = (response.drag_delta().y / ROW).round() as i16;
+            if let Some((i, original, resize)) = state.ui.note_drag {
+                let dx =
+                    (response.total_drag_delta().unwrap_or_default().x / step_w).round() as isize;
+                let dy = (response.total_drag_delta().unwrap_or_default().y / ROW).round() as i16;
                 if let Some(note) = state.project.notes_mut(ci).get_mut(i) {
                     if resize {
                         note.length = (original.length as isize + dx)
@@ -976,7 +977,7 @@ fn piano_roll(ui: &mut egui::Ui, theme: &ARXFUNDTheme, state: &mut StudioState) 
 // ---------------------------------------------------------------------------
 
 fn playlist(ui: &mut egui::Ui, theme: &ARXFUNDTheme, state: &mut StudioState) {
-    ui.horizontal(|ui| {
+    ui.horizontal_wrapped(|ui| {
         let mut song = state.project.song_mode;
         if ui
             .checkbox(&mut song, "Mode Song (lire l'arrangement)")
@@ -1161,9 +1162,11 @@ fn playlist(ui: &mut egui::Ui, theme: &ARXFUNDTheme, state: &mut StudioState) {
             }
             if response.dragged() {
                 if let Some((i, start)) = state.ui.clip_drag {
-                    state.project.arrangement[i].start_step =
-                        (start as isize + (response.drag_delta().x / px_per_step).round() as isize)
-                            .max(0) as usize;
+                    state.project.arrangement[i].start_step = (start as isize
+                        + (response.total_drag_delta().unwrap_or_default().x / px_per_step).round()
+                            as isize)
+                        .max(0)
+                        as usize;
                     state.mark_dirty();
                 }
             }
@@ -1178,155 +1181,119 @@ fn playlist(ui: &mut egui::Ui, theme: &ARXFUNDTheme, state: &mut StudioState) {
 // ---------------------------------------------------------------------------
 
 fn mixer(ui: &mut egui::Ui, theme: &ARXFUNDTheme, state: &mut StudioState) {
-    let count = state.project.channels.len();
-    let levels: Vec<f32> = (0..count)
-        .map(|i| {
-            state
-                .engine
-                .as_ref()
-                .map(|e| e.channel_level(i))
-                .unwrap_or(0.0)
-        })
-        .collect();
-
-    egui::ScrollArea::horizontal()
+    ui.heading("Mixer");
+    ui.label("Panoramique et écho stéréo par canal · Protection douce du master active");
+    ui.add_space(12.0);
+    egui::ScrollArea::both()
+        .id_salt("mixer_strips")
         .auto_shrink([false, false])
         .show(ui, |ui| {
             ui.horizontal_top(|ui| {
-                for i in 0..count {
-                    ui.vertical(|ui| {
-                        ui.set_width(105.0);
-                        ui.spacing_mut().slider_width = 180.0;
-                        let color = {
-                            let c = state.project.channels[i].color;
-                            Color32::from_rgb(c[0], c[1], c[2])
-                        };
-                        ui.label(
-                            RichText::new(&state.project.channels[i].name)
-                                .small()
-                                .strong()
-                                .color(color),
-                        );
-                        ui.add_space(4.0);
-
-                        let mut volume = state.project.channels[i].volume;
-                        if ui
-                            .add(
-                                egui::Slider::new(&mut volume, 0.0..=1.5)
-                                    .vertical()
-                                    .show_value(false),
-                            )
-                            .on_hover_text("Fader de gain du canal")
-                            .changed()
-                        {
-                            state.project.channels[i].volume = volume;
-                            state.mark_dirty();
-                        }
-
-                        ui.spacing_mut().slider_width = 80.0;
-                        let ch = &mut state.project.channels[i];
-                        let pan = ui.add(egui::Slider::new(&mut ch.pan, -1.0..=1.0).text("Pan"));
-                        let delay =
-                            ui.add(egui::Slider::new(&mut ch.delay_mix, 0.0..=0.8).text("Écho"));
-                        if pan.changed() || delay.changed() {
-                            state.mark_dirty();
-                        }
-                        let level = levels.get(i).copied().unwrap_or(0.0);
-                        audio_meter(ui, theme, level, level);
-
-                        let (mute, solo) = {
-                            let ch = &state.project.channels[i];
-                            (ch.mute, ch.solo)
-                        };
-                        ui.horizontal(|ui| {
-                            if ui
-                                .selectable_label(mute, RichText::new("M").small())
-                                .clicked()
-                            {
-                                state.push_undo();
-                                state.project.channels[i].mute = !mute;
-                                state.mark_dirty();
-                            }
-                            if ui
-                                .selectable_label(solo, RichText::new("S").small())
-                                .clicked()
-                            {
-                                state.push_undo();
-                                state.project.channels[i].solo = !solo;
-                                state.mark_dirty();
-                            }
-                        });
-                        ui.label(
-                            RichText::new(format!("{:.0} %", volume * 100.0))
-                                .font(FontId::monospace(9.0))
-                                .color(theme.colors.text_muted),
-                        );
-                    });
-                    ui.separator();
-                }
-
-                ui.vertical(|ui| {
-                    ui.label(
-                        RichText::new("MASTER")
-                            .small()
-                            .strong()
-                            .color(theme.colors.accent_secondary),
-                    );
-                    ui.add_space(4.0);
-                    if ui
-                        .add(
-                            egui::Slider::new(&mut state.project.master_volume, 0.0..=1.5)
-                                .vertical()
-                                .show_value(false),
-                        )
-                        .on_hover_text("Volume général du projet.")
-                        .changed()
-                    {
-                        state.mark_dirty();
-                    }
-                    let peak = state
+                for i in 0..=state.project.channels.len() {
+                    let master = i == state.project.channels.len();
+                    let name = if master {
+                        "Master".to_string()
+                    } else {
+                        state.project.channels[i].name.clone()
+                    };
+                    let color = if master {
+                        theme.colors.accent_secondary
+                    } else {
+                        let c = state.project.channels[i].color;
+                        Color32::from_rgb(c[0], c[1], c[2])
+                    };
+                    let level = state
                         .engine
                         .as_ref()
-                        .map(|e| e.master_level())
+                        .map(|e| {
+                            if master {
+                                e.master_level()
+                            } else {
+                                e.channel_level(i)
+                            }
+                        })
                         .unwrap_or(0.0);
-                    audio_meter(ui, theme, peak, peak);
-                    ui.label(
-                        RichText::new(format!("{:.0} %", state.project.master_volume * 100.0))
-                            .font(FontId::monospace(9.0))
-                            .color(theme.colors.text_muted),
-                    );
-                });
+                    egui::Frame::new()
+                        .fill(theme.colors.bg_panel)
+                        .corner_radius(6.0)
+                        .inner_margin(10)
+                        .show(ui, |ui| {
+                            ui.vertical(|ui| {
+                                ui.set_width(110.0);
+                                ui.label(RichText::new(name).strong().color(color));
+                                let mut volume = if master {
+                                    state.project.master_volume
+                                } else {
+                                    state.project.channels[i].volume
+                                };
+                                ui.allocate_ui(Vec2::new(110.0, 185.0), |ui| {
+                                    ui.horizontal_top(|ui| {
+                                        ui.spacing_mut().slider_width = 175.0;
+                                        if ui
+                                            .add(
+                                                egui::Slider::new(&mut volume, 0.0..=1.5)
+                                                    .vertical()
+                                                    .show_value(false),
+                                            )
+                                            .changed()
+                                        {
+                                            if master {
+                                                state.project.master_volume = volume;
+                                            } else {
+                                                state.project.channels[i].volume = volume;
+                                            }
+                                            state.mark_dirty();
+                                        }
+                                        audio_meter(ui, theme, level, level);
+                                    });
+                                });
+                                ui.label(format!("{:.0} %", volume * 100.0));
+                                if !master {
+                                    ui.horizontal(|ui| {
+                                        let mute = state.project.channels[i].mute;
+                                        let solo = state.project.channels[i].solo;
+                                        if ui.selectable_label(mute, "Muet").clicked() {
+                                            state.push_undo();
+                                            state.project.channels[i].mute = !mute;
+                                            state.mark_dirty();
+                                        }
+                                        if ui.selectable_label(solo, "Solo").clicked() {
+                                            state.push_undo();
+                                            state.project.channels[i].solo = !solo;
+                                            state.mark_dirty();
+                                        }
+                                    });
+                                    ui.spacing_mut().slider_width = 100.0;
+                                    ui.label("Panoramique");
+                                    let pan = ui.add(
+                                        egui::Slider::new(
+                                            &mut state.project.channels[i].pan,
+                                            -1.0..=1.0,
+                                        )
+                                        .show_value(false),
+                                    );
+                                    ui.label("Écho · 300 ms");
+                                    let delay = ui.add(
+                                        egui::Slider::new(
+                                            &mut state.project.channels[i].delay_mix,
+                                            0.0..=0.8,
+                                        )
+                                        .show_value(false),
+                                    );
+                                    if pan.changed() || delay.changed() {
+                                        state.mark_dirty();
+                                    }
+                                } else {
+                                    ui.label(
+                                        RichText::new("Sortie stéréo")
+                                            .color(theme.colors.text_secondary),
+                                    );
+                                    ui.label("EQ, compresseur et réverbération : non disponibles.");
+                                }
+                            });
+                        });
+                }
             });
-        });
-
-    ui.add_space(theme.spacing.sm);
-    if let Some(engine) = &state.engine {
-        ui.label(
-            RichText::new(format!(
-                "Moteur : {:.1} ms de latence · charge CPU {:.1} % · {:.0} Hz",
-                engine.latency_ms(),
-                engine.cpu_load() * 100.0,
-                engine.sample_rate()
-            ))
-            .small()
-            .color(theme.colors.text_muted),
-        );
-    }
-    if let Some(err) = &state.engine_error {
-        ui.colored_label(theme.colors.error, format!("Audio indisponible : {err}"));
-    }
-
-    ui.add_space(theme.spacing.md);
-    egui::CollapsingHeader::new("Traitement (EQ, Compresseur, Limiter, Reverb, Delay)")
-        .default_open(!state.beginner)
-        .show(ui, |ui| {
-            ui.label(
-                RichText::new(
-                    "Écho stéréo par canal : 300 ms, feedback 35 %. Protection douce du master active. \
-                     EQ, compresseur et réverbération : non disponibles.",
-                )
-                .color(theme.colors.warning),
-            );
         });
 }
 

@@ -1,0 +1,867 @@
+   Compiling arxfund v0.1.0 (C:\Users\Arthur\Desktop\test claude\rust-music-studio)
+warning: hard linking files in the incremental compilation cache failed. copying files instead. consider moving the cache directory to a file system which supports hard linking in session dir `\\?\C:\Users\Arthur\Desktop\test claude\rust-music-studio\target\debug\incremental\build_script_build-0oyq57jcrps02\s-ho21dp1x6n-16ou5aj-working`
+
+warning: `arxfund` (build script) generated 1 warning
+warning: hard linking files in the incremental compilation cache failed. copying files instead. consider moving the cache directory to a file system which supports hard linking in session dir `\\?\C:\Users\Arthur\Desktop\test claude\rust-music-studio\target\debug\incremental\arxfund-1o8mol967nvuu\s-ho21dq895l-0lsco87-working`
+
+warning: this function has too many arguments (8/7)
+   --> src\app.rs:111:5
+    |
+111 | /     pub fn new(
+112 | |         cc: &eframe::CreationContext<'_>,
+113 | |         db: Database,
+114 | |         engine: AudioEngine,
+...   |
+119 | |         startup_notes: Vec<String>,
+120 | |     ) -> Self {
+    | |_____________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#too_many_arguments
+    = note: `#[warn(clippy::too_many_arguments)]` on by default
+
+warning: this `if` statement can be collapsed
+   --> src\app.rs:195:9
+    |
+195 | /         if let Ok(Some(v)) = self.db.get_setting("player.volume") {
+196 | |             if let Ok(f) = v.parse::<f32>() {
+197 | |                 self.volume = f.clamp(0.0, 1.0);
+198 | |                 self.engine.set_volume(self.volume);
+199 | |             }
+200 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#collapsible_if
+    = note: `#[warn(clippy::collapsible_if)]` on by default
+help: collapse nested if block
+    |
+195 ~         if let Ok(Some(v)) = self.db.get_setting("player.volume")
+196 ~             && let Ok(f) = v.parse::<f32>() {
+197 |                 self.volume = f.clamp(0.0, 1.0);
+198 |                 self.engine.set_volume(self.volume);
+199 ~             }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src\app.rs:201:9
+    |
+201 | /         if let Ok(Some(v)) = self.db.get_setting("player.resume") {
+202 | |             if let Ok(val) = serde_json::from_str::<serde_json::Value>(&v) {
+203 | |                 let sid = val.get("song_id").and_then(|x| x.as_str());
+204 | |                 let pos = val.get("position").and_then(|x| x.as_f64()).unwrap_or(0.0);
+...   |
+214 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+201 ~         if let Ok(Some(v)) = self.db.get_setting("player.resume")
+202 ~             && let Ok(val) = serde_json::from_str::<serde_json::Value>(&v) {
+203 |                 let sid = val.get("song_id").and_then(|x| x.as_str());
+...
+212 |                 }
+213 ~             }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src\app.rs:205:17
+    |
+205 | /                 if let Some(sid) = sid {
+206 | |                     if let Ok(Some(song)) = self.db.get_song(sid) {
+207 | |                         if song.local_path.is_some() {
+208 | |                             self.resume_song = Some(song);
+...   |
+212 | |                 }
+    | |_________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+205 ~                 if let Some(sid) = sid
+206 ~                     && let Ok(Some(song)) = self.db.get_song(sid) {
+207 |                         if song.local_path.is_some() {
+...
+210 |                         }
+211 ~                     }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src\app.rs:206:21
+    |
+206 | /                     if let Ok(Some(song)) = self.db.get_song(sid) {
+207 | |                         if song.local_path.is_some() {
+208 | |                             self.resume_song = Some(song);
+209 | |                             self.resume_pos = pos;
+210 | |                         }
+211 | |                     }
+    | |_____________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+206 ~                     if let Ok(Some(song)) = self.db.get_song(sid)
+207 ~                         && song.local_path.is_some() {
+208 |                             self.resume_song = Some(song);
+209 |                             self.resume_pos = pos;
+210 ~                         }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src\app.rs:273:9
+    |
+273 | /         if let Some(idx) = self.current {
+274 | |             if let Some(song) = self.queue.get(idx).cloned() {
+275 | |                 if let Some(path) = song.local_path.clone() {
+276 | |                     self.engine.load(path, true);
+...   |
+282 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+273 ~         if let Some(idx) = self.current
+274 ~             && let Some(song) = self.queue.get(idx).cloned() {
+275 |                 if let Some(path) = song.local_path.clone() {
+...
+280 |                 }
+281 ~             }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src\app.rs:274:13
+    |
+274 | /             if let Some(song) = self.queue.get(idx).cloned() {
+275 | |                 if let Some(path) = song.local_path.clone() {
+276 | |                     self.engine.load(path, true);
+277 | |                     let _ = self
+...   |
+281 | |             }
+    | |_____________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+274 ~             if let Some(song) = self.queue.get(idx).cloned()
+275 ~                 && let Some(path) = song.local_path.clone() {
+276 |                     self.engine.load(path, true);
+...
+279 |                         .set_setting("player.volume", &self.volume.to_string());
+280 ~                 }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src\app.rs:371:9
+    |
+371 | /         if let Some(p) = &self.import_progress {
+372 | |             if p.done >= p.total && p.total > 0 && self.import_rx.is_some() {
+373 | |                 self.load_library();
+374 | |                 self.import_rx = None;
+375 | |             }
+376 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+371 ~         if let Some(p) = &self.import_progress
+372 ~             && p.done >= p.total && p.total > 0 && self.import_rx.is_some() {
+373 |                 self.load_library();
+374 |                 self.import_rx = None;
+375 ~             }
+    |
+
+warning: the variable `done` is used as a loop counter
+   --> src\app.rs:405:13
+    |
+405 |             for p in &paths {
+    |             ^^^^^^^^^^^^^^^ help: consider using: `for (done, p) in paths.iter().enumerate()`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#explicit_counter_loop
+    = note: `#[warn(clippy::explicit_counter_loop)]` on by default
+
+warning: this `if` statement can be collapsed
+   --> src\app.rs:431:13
+    |
+431 | /             if button(ui, &self.theme, "Fichiers…").clicked() {
+432 | |                 if let Some(paths) = rfd::FileDialog::new()
+433 | |                     .add_filter(
+434 | |                         "Audio",
+...   |
+441 | |             }
+    | |_____________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+431 ~             if button(ui, &self.theme, "Fichiers…").clicked()
+432 ~                 && let Some(paths) = rfd::FileDialog::new()
+433 |                     .add_filter(
+...
+439 |                     self.start_import(paths);
+440 ~                 }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src\app.rs:443:13
+    |
+443 | /             if button(ui, &self.theme, "Dossier…").clicked() {
+444 | |                 if let Some(dir) = rfd::FileDialog::new().pick_folder() {
+445 | |                     let files = collect_audio_files(&dir);
+446 | |                     self.start_import(files);
+447 | |                 }
+448 | |             }
+    | |_____________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+443 ~             if button(ui, &self.theme, "Dossier…").clicked()
+444 ~                 && let Some(dir) = rfd::FileDialog::new().pick_folder() {
+445 |                     let files = collect_audio_files(&dir);
+446 |                     self.start_import(files);
+447 ~                 }
+    |
+
+warning: you seem to be trying to use `match` for destructuring a single pattern. Consider using `if let`
+   --> src\audio\engine.rs:534:17
+    |
+534 | /                 match dec.decode_ref(&packet.as_packet_ref()) {
+535 | |                     Ok(decoded) => {
+536 | |                         let spec = decoded.spec();
+537 | |                         let frames = decoded.frames();
+...   |
+550 | |                     Err(_) => {}
+551 | |                 }
+    | |_________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#single_match
+    = note: `#[warn(clippy::single_match)]` on by default
+help: try
+    |
+534 ~                 if let Ok(decoded) = dec.decode_ref(&packet.as_packet_ref()) {
+535 +                     let spec = decoded.spec();
+536 +                     let frames = decoded.frames();
+537 +                     let ch = spec.channels().count() as usize;
+538 +                     let mut samples = vec![0.0f32; frames * ch];
+539 +                     decoded.copy_to_slice_interleaved::<f32, _>(&mut samples);
+540 +                     let stereo = to_stereo(&samples, ch);
+541 +                     let out_samples = if resample_needed {
+542 +                         resampler.as_ref().unwrap().process(&stereo)
+543 +                     } else {
+544 +                         stereo
+545 +                     };
+546 +                     pending = out_samples;
+547 +                     pending_pos = 0;
+548 +                 }
+    |
+
+warning: casting to the same type is unnecessary (`usize` -> `usize`)
+   --> src\audio\engine.rs:538:34
+    |
+538 |                         let ch = spec.channels().count() as usize;
+    |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: try: `spec.channels().count()`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#unnecessary_cast
+    = note: `#[warn(clippy::unnecessary_cast)]` on by default
+
+warning: the loop variable `i` is used to index `samples`
+  --> src\audio\ring.rs:57:22
+   |
+57 |             for i in 0..n {
+   |                      ^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#needless_range_loop
+   = note: `#[warn(clippy::needless_range_loop)]` on by default
+help: consider using an iterator and enumerate()
+   |
+57 -             for i in 0..n {
+57 +             for (i, <item>) in samples.iter().enumerate().take(n) {
+   |
+
+warning: the loop variable `i` is used to index `out`
+  --> src\audio\ring.rs:72:22
+   |
+72 |             for i in 0..n {
+   |                      ^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#needless_range_loop
+help: consider using an iterator and enumerate()
+   |
+72 -             for i in 0..n {
+72 +             for (i, <item>) in out.iter_mut().enumerate().take(n) {
+   |
+
+warning: this `if` statement can be collapsed
+   --> src\library\import.rs:96:5
+    |
+ 96 | /     if let Some(tag) = tag {
+ 97 | |         if let Some(pic) = tag.pictures().first() {
+ 98 | |             let _ = fs::create_dir_all(covers_dir);
+ 99 | |             let ext = match pic.mime_type() {
+...   |
+108 | |     }
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+ 96 ~     if let Some(tag) = tag
+ 97 ~         && let Some(pic) = tag.pictures().first() {
+ 98 |             let _ = fs::create_dir_all(covers_dir);
+...
+106 |             }
+107 ~         }
+    |
+
+warning: method `from_str` can be confused for the standard trait method `std::str::FromStr::from_str`
+  --> src\library\models.rs:16:5
+   |
+16 | /     pub fn from_str(s: &str) -> Self {
+17 | |         match s {
+18 | |             "local" => Provider::Local,
+19 | |             _ => Provider::Local,
+20 | |         }
+21 | |     }
+   | |_____^
+   |
+   = help: consider implementing the trait `std::str::FromStr` or choosing a less ambiguous method name
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#should_implement_trait
+   = note: `#[warn(clippy::should_implement_trait)]` on by default
+
+warning: doc list item overindented
+ --> src\paths.rs:6:5
+  |
+6 | //!                          personnels (modifiables sans droits administrateur).
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^ help: try using `  ` (2 spaces)
+  |
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#doc_overindented_list_items
+  = note: `#[warn(clippy::doc_overindented_list_items)]` on by default
+
+warning: using `clone` on type `StreamConfig` which implements the `Copy` trait
+   --> src\studio\engine.rs:155:46
+    |
+155 |             match device.build_output_stream(config.clone(), data_cb, err_cb, None) {
+    |                                              ^^^^^^^^^^^^^^ help: try removing the `clone` call: `config`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#clone_on_copy
+    = note: `#[warn(clippy::clone_on_copy)]` on by default
+
+warning: called `map(f)` on an `Option` value where `f` is a closure that returns the unit type `()`
+   --> src\studio\engine.rs:413:13
+    |
+413 | /             shared
+414 | |                 .channel_peaks
+415 | |                 .get(ci)
+416 | |                 .map(|slot| slot.store(peak.to_bits(), Ordering::Relaxed));
+    | |__________________________________________________________________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#option_map_unit_fn
+    = note: `#[warn(clippy::option_map_unit_fn)]` on by default
+help: use `if let` instead
+    |
+413 ~             if let Some(slot) = shared
+414 +                 .channel_peaks
+415 +                 .get(ci) { slot.store(peak.to_bits(), Ordering::Relaxed) }
+    |
+
+warning: using `chunks_exact` with a constant chunk size
+   --> src\studio\export.rs:121:47
+    |
+121 |             for frame in buffer[..frames * 2].chunks_exact(2) {
+    |                                               ^^^^^^^^^^^^^^^ help: consider using `as_chunks` instead: `as_chunks::<2>().0`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#chunks_exact_to_as_chunks
+    = note: `#[warn(clippy::chunks_exact_to_as_chunks)]` on by default
+
+warning: consider using `sort_by_key`
+   --> src\studio\project.rs:699:5
+    |
+699 |     out.sort_by(|a, b| b.modified_at.cmp(&a.modified_at));
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#unnecessary_sort_by
+    = note: `#[warn(clippy::unnecessary_sort_by)]` on by default
+help: try
+    |
+699 -     out.sort_by(|a, b| b.modified_at.cmp(&a.modified_at));
+699 +     out.sort_by_key(|a| std::cmp::Reverse(a.modified_at));
+    |
+
+warning: this `if` statement can be collapsed
+   --> src\studio\sequencer.rs:163:13
+    |
+163 | /             if let Some(clip) = project.arrangement.get(clip_index) {
+164 | |                 if pos >= clip.start_step && pos < clip.start_step.saturating_add(clip.length_steps)
+165 | |                 {
+166 | |                     let pi = clip.pattern.min(project.patterns.len() - 1);
+...   |
+170 | |             }
+    | |_____________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+163 ~             if let Some(clip) = project.arrangement.get(clip_index)
+164 ~                 && pos >= clip.start_step && pos < clip.start_step.saturating_add(clip.length_steps)
+165 |                 {
+...
+168 |                     return Some((pi, (pos - clip.start_step) % len));
+169 ~                 }
+    |
+
+warning: manual implementation of `.is_multiple_of()`
+   --> src\studio\sequencer.rs:184:25
+    |
+184 |         if metronome && triggered % STEPS_PER_BEAT as u64 == 0 {
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: replace with: `triggered.is_multiple_of(STEPS_PER_BEAT as u64)`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#manual_is_multiple_of
+    = note: `#[warn(clippy::manual_is_multiple_of)]` on by default
+
+warning: manual implementation of `.is_multiple_of()`
+   --> src\studio\sequencer.rs:275:27
+    |
+275 |         let interval = if triggered % 2 == 0 {
+    |                           ^^^^^^^^^^^^^^^^^^ help: replace with: `triggered.is_multiple_of(2)`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#manual_is_multiple_of
+
+warning: using `chunks_exact_mut` with a constant chunk size
+   --> src\studio\sequencer.rs:297:26
+    |
+297 |         for frame in out.chunks_exact_mut(2) {
+    |                          ^^^^^^^^^^^^^^^^^^^ help: consider using `as_chunks_mut` instead: `as_chunks_mut::<2>().0`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#chunks_exact_to_as_chunks
+
+warning: method `next` can be confused for the standard trait method `std::iter::Iterator::next`
+   --> src\studio\synth.rs:198:5
+    |
+198 | /     pub fn next(&mut self) -> (f32, f32) {
+199 | |         if !self.active {
+200 | |             return (0.0, 0.0);
+...   |
+404 | |         (out * self.pan_l, out * self.pan_r)
+405 | |     }
+    | |_____^
+    |
+    = help: consider implementing the trait `std::iter::Iterator` or choosing a less ambiguous method name
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#should_implement_trait
+
+warning: this `if` statement can be collapsed
+   --> src\studio\ui.rs:126:5
+    |
+126 | /     if command && ctx.input(|i| i.key_pressed(egui::Key::O)) {
+127 | |         if let Some(path) = rfd::FileDialog::new()
+128 | |             .set_directory(&state.project_dir)
+129 | |             .add_filter("Projet ARXFUND", &["rmsproj"])
+...   |
+134 | |     }
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+126 ~     if command && ctx.input(|i| i.key_pressed(egui::Key::O))
+127 ~         && let Some(path) = rfd::FileDialog::new()
+128 |             .set_directory(&state.project_dir)
+...
+132 |             state.open(path);
+133 ~         }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src\studio\ui.rs:282:17
+    |
+282 | /                 if button_small(ui, theme, "Enregistrer sous…").clicked() {
+283 | |                     if let Some(path) = rfd::FileDialog::new()
+284 | |                         .set_directory(&state.project_dir)
+285 | |                         .set_file_name(format!("{}.rmsproj", state.project.id))
+...   |
+291 | |                 }
+    | |_________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+282 ~                 if button_small(ui, theme, "Enregistrer sous…").clicked()
+283 ~                     && let Some(path) = rfd::FileDialog::new()
+284 |                         .set_directory(&state.project_dir)
+...
+289 |                         state.save_as(path);
+290 ~                     }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src\studio\ui.rs:295:17
+    |
+295 | /                 if button_small(ui, theme, "Ouvrir…").clicked() {
+296 | |                     if let Some(path) = rfd::FileDialog::new()
+297 | |                         .set_directory(&state.project_dir)
+298 | |                         .add_filter("Projet ARXFUND", &["rmsproj"])
+...   |
+303 | |                 }
+    | |_________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+295 ~                 if button_small(ui, theme, "Ouvrir…").clicked()
+296 ~                     && let Some(path) = rfd::FileDialog::new()
+297 |                         .set_directory(&state.project_dir)
+...
+301 |                         state.open(path);
+302 ~                     }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src\studio\ui.rs:606:36
+    |
+606 |   ...                   } else if ui.input(|inp| inp.pointer.primary_down()) {
+    |  ______________________________^
+607 | | ...                       if let Some((lane, value)) = state.drag_paint {
+608 | | ...                           let over = ui.input(|inp| {
+609 | | ...                               inp.pointer
+...   |
+621 | | ...                   }
+    | |_______________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+606 ~                             } else if ui.input(|inp| inp.pointer.primary_down())
+607 ~                                 && let Some((lane, value)) = state.drag_paint {
+608 |                                     let over = ui.input(|inp| {
+...
+619 |                                     }
+620 ~                                 }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src\studio\ui.rs:741:5
+    |
+741 | /     if load_sample {
+742 | |         if let Some(path) = rfd::FileDialog::new()
+743 | |             .add_filter("Audio", &["wav", "mp3", "flac", "ogg", "m4a"])
+744 | |             .pick_file()
+...   |
+748 | |     }
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+741 ~     if load_sample
+742 ~         && let Some(path) = rfd::FileDialog::new()
+743 |             .add_filter("Audio", &["wav", "mp3", "flac", "ogg", "m4a"])
+...
+746 |             state.assign_sample(index, path);
+747 ~         }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src\studio\ui.rs:933:9
+    |
+933 | /         if response.drag_started() {
+934 | |             if let Some(origin) = ui.input(|i| i.pointer.press_origin()) {
+935 | |                 if let Some(i) = state
+936 | |                     .project
+...   |
+946 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+933 ~         if response.drag_started()
+934 ~             && let Some(origin) = ui.input(|i| i.pointer.press_origin()) {
+935 |                 if let Some(i) = state
+...
+944 |                 }
+945 ~             }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src\studio\ui.rs:934:13
+    |
+934 | /             if let Some(origin) = ui.input(|i| i.pointer.press_origin()) {
+935 | |                 if let Some(i) = state
+936 | |                     .project
+937 | |                     .notes(ci)
+...   |
+945 | |             }
+    | |_____________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+934 ~             if let Some(origin) = ui.input(|i| i.pointer.press_origin())
+935 ~                 && let Some(i) = state
+936 |                     .project
+...
+943 |                     state.ui.note_drag = Some((i, note, ui.input(|i| i.modifiers.shift)));
+944 ~                 }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src\studio\ui.rs:947:9
+    |
+947 | /         if response.dragged() {
+948 | |             if let Some((i, original, resize)) = state.ui.note_drag {
+949 | |                 let dx =
+950 | |                     (response.total_drag_delta().unwrap_or_default().x / step_w).round() as isize;
+...   |
+967 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+947 ~         if response.dragged()
+948 ~             && let Some((i, original, resize)) = state.ui.note_drag {
+949 |                 let dx =
+...
+965 |                 state.mark_dirty();
+966 ~             }
+    |
+
+warning: this `if` statement can be collapsed
+    --> src\studio\ui.rs:1084:5
+     |
+1084 | /     if let Some(i) = remove {
+1085 | |         if state.project.arrangement.len() > 1 {
+1086 | |             state.push_undo();
+1087 | |             state.project.arrangement.remove(i);
+...    |
+1090 | |     }
+     | |_____^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#collapsible_if
+help: collapse nested if block
+     |
+1084 ~     if let Some(i) = remove
+1085 ~         && state.project.arrangement.len() > 1 {
+1086 |             state.push_undo();
+1087 |             state.project.arrangement.remove(i);
+1088 |             state.mark_dirty();
+1089 ~         }
+     |
+
+warning: this `if` statement can be collapsed
+    --> src\studio\ui.rs:1148:13
+     |
+1148 | /             if response.drag_started() {
+1149 | |                 if let Some(pos) = ui.input(|i| i.pointer.press_origin()) {
+1150 | |                     let hit = state
+1151 | |                         .project
+...    |
+1162 | |             }
+     | |_____________^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#collapsible_if
+help: collapse nested if block
+     |
+1148 ~             if response.drag_started()
+1149 ~                 && let Some(pos) = ui.input(|i| i.pointer.press_origin()) {
+1150 |                     let hit = state
+ ...
+1160 |                     }
+1161 ~                 }
+     |
+
+warning: this `if` statement can be collapsed
+    --> src\studio\ui.rs:1163:13
+     |
+1163 | /             if response.dragged() {
+1164 | |                 if let Some((i, start)) = state.ui.clip_drag {
+1165 | |                     state.project.arrangement[i].start_step = (start as isize
+1166 | |                         + (response.total_drag_delta().unwrap_or_default().x / px_per_step).round()
+...    |
+1172 | |             }
+     | |_____________^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#collapsible_if
+help: collapse nested if block
+     |
+1163 ~             if response.dragged()
+1164 ~                 && let Some((i, start)) = state.ui.clip_drag {
+1165 |                     state.project.arrangement[i].start_step = (start as isize
+ ...
+1170 |                     state.mark_dirty();
+1171 ~                 }
+     |
+
+warning: this `if` statement can be collapsed
+   --> src\ui\audio_components.rs:142:9
+    |
+142 | /         if self.show_label {
+143 | |             if let Some(text) = self.label {
+144 | |                 painter.text(
+145 | |                     Pos2::new(center.x, rect.max.y - 1.0),
+...   |
+152 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+142 ~         if self.show_label
+143 ~             && let Some(text) = self.label {
+144 |                 painter.text(
+...
+150 |                 );
+151 ~             }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src\ui\audio_components.rs:219:9
+    |
+219 | /         if response.clicked() {
+220 | |             if let Some(pos) = response.interact_pointer_pos() {
+221 | |                 let t = ((rect.bottom() - pos.y) / rect.height()).clamp(0.0, 1.0);
+222 | |                 *self.value = start + t * span;
+...   |
+225 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+219 ~         if response.clicked()
+220 ~             && let Some(pos) = response.interact_pointer_pos() {
+221 |                 let t = ((rect.bottom() - pos.y) / rect.height()).clamp(0.0, 1.0);
+222 |                 *self.value = start + t * span;
+223 |                 response.mark_changed();
+224 ~             }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src\ui\audio_components.rs:351:9
+    |
+351 | /         if self.show_label {
+352 | |             if let Some(label) = self.label {
+353 | |                 painter.text(
+354 | |                     Pos2::new(rect.center().x, rect.top() - 2.0),
+...   |
+361 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+351 ~         if self.show_label
+352 ~             && let Some(label) = self.label {
+353 |                 painter.text(
+...
+359 |                 );
+360 ~             }
+    |
+
+warning: returning the result of a `let` binding from a block
+   --> src\ui\components.rs:329:5
+    |
+322 | /     let text_response = ui.put(
+323 | |         rect.shrink(8.0),
+324 | |         egui::TextEdit::singleline(text)
+325 | |             .hint_text(RichText::new(placeholder).color(theme.colors.text_muted))
+326 | |             .text_color(theme.colors.text_primary),
+327 | |     );
+    | |______- unnecessary `let` binding
+328 |
+329 |       text_response
+    |       ^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#let_and_return
+    = note: `#[warn(clippy::let_and_return)]` on by default
+help: return the expression directly
+    |
+322 ~     
+323 |
+324 ~     ui.put(
+325 +         rect.shrink(8.0),
+326 +         egui::TextEdit::singleline(text)
+327 +             .hint_text(RichText::new(placeholder).color(theme.colors.text_muted))
+328 +             .text_color(theme.colors.text_primary),
+329 +     )
+    |
+
+warning: this `if` branch is empty
+   --> src\ui\components.rs:441:17
+    |
+441 |                 if icon_button_small(ui, theme, "S").clicked() {}
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: you can remove it: `icon_button_small(ui, theme, "S").clicked();`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#needless_ifs
+    = note: `#[warn(clippy::needless_ifs)]` on by default
+
+warning: you should consider adding a `Default` implementation for `NotificationManager`
+   --> src\ui\components.rs:638:5
+    |
+638 | /     pub fn new() -> Self {
+639 | |         Self {
+640 | |             notifications: Vec::new(),
+641 | |         }
+642 | |     }
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#new_without_default
+    = note: `#[warn(clippy::new_without_default)]` on by default
+help: try adding this
+    |
+707 ~ }
+708 + 
+709 + impl Default for NotificationManager {
+710 +     fn default() -> Self {
+711 +         Self::new()
+712 +     }
+713 + }
+    |
+
+warning: this `if` statement can be collapsed
+  --> src\ui\player.rs:58:5
+   |
+58 | /     if ui
+59 | |         .checkbox(&mut app.studio.beginner, "Aide à la composition")
+60 | |         .changed()
+...  |
+68 | |     }
+   | |_____^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#collapsible_if
+help: collapse nested if block
+   |
+60 ~         .changed()
+61 ~         && let Err(e) = app.db.set_setting(
+62 |             "studio.beginner",
+...
+65 |             app.error_msg = Some(e.to_string());
+66 ~         }
+   |
+
+warning: this `if` statement can be collapsed
+   --> src\ui\player.rs:208:29
+    |
+208 | / ...                   if let Some(id) = playlist {
+209 | | ...                       if ui.button("Retirer").clicked() {
+210 | | ...                           if let Err(e) = app.db.remove_track_from_playlist(id, &song.id)
+...   |
+218 | | ...                   }
+    | |_______________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+208 ~                             if let Some(id) = playlist
+209 ~                                 && ui.button("Retirer").clicked() {
+210 |                                     if let Err(e) = app.db.remove_track_from_playlist(id, &song.id)
+...
+216 |                                     app.load_playlists();
+217 ~                                 }
+    |
+
+warning: `arxfund` (lib) generated 47 warnings (run `cargo clippy --fix --lib -p arxfund -- ` to apply 38 suggestions)
+warning: hard linking files in the incremental compilation cache failed. copying files instead. consider moving the cache directory to a file system which supports hard linking in session dir `\\?\C:\Users\Arthur\Desktop\test claude\rust-music-studio\target\debug\incremental\ARXFUND-2nk8ja8mpzydw\s-ho21dqofuz-1munz4r-working`
+
+warning: `arxfund` (bin "ARXFUND") generated 1 warning
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.49s

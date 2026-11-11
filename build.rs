@@ -67,7 +67,15 @@ fn main() {
 
     let out_dir = PathBuf::from(env::var("OUT_DIR").expect("OUT_DIR"));
     let obj = out_dir.join("arxfund_resources.o");
+    let mut search_path = vec![windres.parent().expect("windres directory").to_path_buf()];
+    if let Some(path) = env::var_os("PATH") {
+        search_path.extend(env::split_paths(&path));
+    }
     let status = Command::new(&windres)
+        .env(
+            "PATH",
+            env::join_paths(search_path).expect("tool search path"),
+        )
         .arg("-I")
         .arg("assets")
         .arg("-I")

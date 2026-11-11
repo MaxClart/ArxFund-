@@ -1,0 +1,36 @@
+warning: hard linking files in the incremental compilation cache failed. copying files instead. consider moving the cache directory to a file system which supports hard linking in session dir `\\?\C:\Users\Arthur\Desktop\test claude\rust-music-studio\target\debug\incremental\build_script_build-0e85hw42k8sas\s-ho214e6nj4-0df2tph-working`
+
+warning: hard linking files in the incremental compilation cache failed. copying files instead. consider moving the cache directory to a file system which supports hard linking in session dir `\\?\C:\Users\Arthur\Desktop\test claude\rust-music-studio\target\debug\incremental\arxfund-332b6ixyifuom\s-ho2163t01t-0sbzq7r-working`
+
+warning: hard linking files in the incremental compilation cache failed. copying files instead. consider moving the cache directory to a file system which supports hard linking in session dir `\\?\C:\Users\Arthur\Desktop\test claude\rust-music-studio\target\debug\incremental\ARXFUND-27kp3mjieqg6m\s-ho216516p5-0dfd9so-working`
+
+warning: hard linking files in the incremental compilation cache failed. copying files instead. consider moving the cache directory to a file system which supports hard linking in session dir `\\?\C:\Users\Arthur\Desktop\test claude\rust-music-studio\target\debug\incremental\review_regressions-13pe6vhvh2ffc\s-ho216lldp3-1mez3o2-working`
+
+
+running 6 tests
+.. 2/6
+save_reopen_export_all_depths_and_monotonic_progress --- FAILED
+.. 5/6
+delay_changes_audio_and_resets_deterministically --- FAILED
+
+failures:
+
+---- save_reopen_export_all_depths_and_monotonic_progress stdout ----
+
+thread 'save_reopen_export_all_depths_and_monotonic_progress' (46552) panicked at tests\review_regressions.rs:111:22:
+called `Result::unwrap()` on an `Err` value: "Accès refusé. (os error 5)"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- delay_changes_audio_and_resets_deterministically stdout ----
+
+thread 'delay_changes_audio_and_resets_deterministically' (8260) panicked at tests\review_regressions.rs:92:5:
+reset must clear all delay state
+
+
+failures:
+    delay_changes_audio_and_resets_deterministically
+    save_reopen_export_all_depths_and_monotonic_progress
+
+test result: FAILED. 4 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+error: test failed, to rerun pass `--test review_regressions`

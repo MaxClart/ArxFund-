@@ -12,7 +12,7 @@ fn write_wav(path: &PathBuf) {
         sample_format: hound::SampleFormat::Int,
     };
     let mut w = WavWriter::create(path, spec).unwrap();
-    for i in 0..8000 {
+    for i in 0..240_000 {
         let s = ((i as f32 * 440.0 * 2.0 * std::f32::consts::PI / 8000.0).sin() * 16000.0) as i16;
         w.write_sample(s).unwrap();
     }
@@ -41,6 +41,22 @@ fn engine_loads_and_decodes_wav() {
     engine.play();
     thread::sleep(Duration::from_millis(300));
     assert!(engine.position_secs() > 0.05, "position attendue > 0.05s");
+    engine.pause();
+    thread::sleep(Duration::from_millis(150));
+    assert!(
+        !engine.is_playing(),
+        "pause must survive a full decoder buffer"
+    );
+    engine.seek(15.0);
+    thread::sleep(Duration::from_millis(150));
+    assert!(
+        (engine.position_secs() - 15.0).abs() < 0.3,
+        "seek must report the new position: {}",
+        engine.position_secs()
+    );
+    engine.play();
+    thread::sleep(Duration::from_millis(150));
+    assert!(engine.position_secs() > 15.05);
     engine.stop();
     let _ = std::fs::remove_dir_all(&dir);
 }

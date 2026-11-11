@@ -16,9 +16,22 @@ pub const PRODUCT_NAME: &str = "ARXFUND";
 pub const LEGACY_DIR_NAME: &str = "rust-music-studio";
 
 /// `%APPDATA%\ARXFUND` sous Windows.
+fn isolated_root() -> Option<PathBuf> {
+    std::env::var_os("ARXFUND_TEST_ROOT")
+        .map(PathBuf::from)
+        .or_else(|| {
+            let exe = std::env::current_exe().ok()?;
+            let parent = exe.parent()?;
+            parent
+                .join("ARXFUND.portable")
+                .is_file()
+                .then(|| parent.join("portable-data"))
+        })
+}
+
 pub fn data_dir() -> PathBuf {
-    if let Some(root) = std::env::var_os("ARXFUND_TEST_ROOT") {
-        return PathBuf::from(root).join("Data");
+    if let Some(root) = isolated_root() {
+        return root.join("Data");
     }
     dirs::data_dir()
         .unwrap_or_else(|| PathBuf::from("."))
@@ -46,8 +59,8 @@ pub fn backups_dir() -> PathBuf {
 
 /// Racine des contenus personnels : `Musique\ARXFUND` (ou Documents en secours).
 pub fn music_root() -> PathBuf {
-    if let Some(root) = std::env::var_os("ARXFUND_TEST_ROOT") {
-        return PathBuf::from(root).join("Music");
+    if let Some(root) = isolated_root() {
+        return root.join("Music");
     }
     dirs::audio_dir()
         .or_else(dirs::document_dir)
@@ -149,7 +162,7 @@ fn copy_missing(src: &Path, dst: &Path, notes: &mut Vec<String>) {
 /// emplacement ne sont jamais écrasés.
 pub fn migrate_legacy_data() -> Vec<String> {
     let mut notes = Vec::new();
-    if std::env::var_os("ARXFUND_TEST_ROOT").is_some() {
+    if isolated_root().is_some() {
         return notes;
     }
     let legacy = legacy_data_dir();

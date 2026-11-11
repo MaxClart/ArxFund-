@@ -13,6 +13,8 @@
 #    8. Vérifie l'existence du fichier final.
 #==============================================================================
 
+param([string]$InnoCompilerPath)
+
 $ProgressPreference = "SilentlyContinue"
 
 function Stop-Build {
@@ -33,6 +35,8 @@ $SetupExeName = "ARXFUND-Setup-x64.exe"
 $SetupExePath = Join-Path $DistDir $SetupExeName
 $ReleaseExe = Join-Path $ProjectRoot "target\release\ARXFUND.exe"
 $InnoSetupPaths = @(
+    $InnoCompilerPath,
+    "$env:LOCALAPPDATA\Programs\Inno Setup 6\ISCC.exe",
     "$env:LOCALAPPDATA\Programs\Inno Setup 7\ISCC.exe",
     "C:\Program Files (x86)\Inno Setup 7\ISCC.exe",
     "C:\Program Files\Inno Setup 7\ISCC.exe",
@@ -66,7 +70,7 @@ Write-Host "  target  : x86_64-pc-windows-gnu présent" -ForegroundColor Green
 
 $iscc = $null
 foreach ($p in $InnoSetupPaths) {
-    if (Test-Path $p) {
+    if ($p -and (Test-Path -LiteralPath $p)) {
         $iscc = $p
         break
     }

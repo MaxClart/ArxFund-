@@ -91,7 +91,14 @@ impl StudioEngine {
 
         let range = supported
             .iter()
-            .find(|c| c.sample_format() == SampleFormat::F32 && c.channels() >= 2)
+            .filter(|c| c.sample_format() == SampleFormat::F32 && c.channels() == 2)
+            .max_by_key(|c| {
+                (
+                    (c.min_sample_rate()..=c.max_sample_rate()).contains(&48_000),
+                    (c.min_sample_rate()..=c.max_sample_rate()).contains(&44_100),
+                    c.max_sample_rate(),
+                )
+            })
             .cloned()
             .ok_or("Aucune sortie stéréo f32 disponible")?;
         let min = range.min_sample_rate();

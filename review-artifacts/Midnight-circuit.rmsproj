@@ -1,0 +1,770 @@
+{
+  "id": "proj-18e6effabc70affc-0",
+  "name": "Midnight circuit — Review",
+  "bpm": 112.0,
+  "time_sig_num": 4,
+  "time_sig_den": 4,
+  "steps": 16,
+  "swing": 0.0,
+  "master_volume": 0.85,
+  "channels": [
+    {
+      "id": "ch-18e6effabc7137ec-1",
+      "name": "Kick",
+      "kind": "kick",
+      "color": [
+        248,
+        113,
+        113
+      ],
+      "volume": 0.8,
+      "pan": 0.0,
+      "pitch": 0.0,
+      "mute": false,
+      "solo": false,
+      "mixer_track": 0,
+      "sample_path": null,
+      "tone": 1.0,
+      "synth": {
+        "waveform": 1,
+        "attack": 0.01,
+        "decay": 0.16,
+        "sustain": 0.72,
+        "release": 0.22,
+        "glide": 0.0
+      },
+      "delay_mix": 0.0
+    },
+    {
+      "id": "ch-18e6effabc716b18-2",
+      "name": "Clap",
+      "kind": "clap",
+      "color": [
+        244,
+        114,
+        182
+      ],
+      "volume": 0.8,
+      "pan": 0.0,
+      "pitch": 0.0,
+      "mute": false,
+      "solo": false,
+      "mixer_track": 1,
+      "sample_path": null,
+      "tone": 1.0,
+      "synth": {
+        "waveform": 1,
+        "attack": 0.01,
+        "decay": 0.16,
+        "sustain": 0.72,
+        "release": 0.22,
+        "glide": 0.0
+      },
+      "delay_mix": 0.0
+    },
+    {
+      "id": "ch-18e6effabc716d0c-3",
+      "name": "Charley fermé",
+      "kind": "hat_closed",
+      "color": [
+        96,
+        165,
+        250
+      ],
+      "volume": 0.8,
+      "pan": 0.0,
+      "pitch": 0.0,
+      "mute": false,
+      "solo": false,
+      "mixer_track": 2,
+      "sample_path": null,
+      "tone": 1.0,
+      "synth": {
+        "waveform": 1,
+        "attack": 0.01,
+        "decay": 0.16,
+        "sustain": 0.72,
+        "release": 0.22,
+        "glide": 0.0
+      },
+      "delay_mix": 0.0
+    },
+    {
+      "id": "ch-18e6effabc716e38-4",
+      "name": "Basse 808",
+      "kind": "bass808",
+      "color": [
+        139,
+        92,
+        246
+      ],
+      "volume": 0.8,
+      "pan": 0.0,
+      "pitch": 0.0,
+      "mute": false,
+      "solo": false,
+      "mixer_track": 3,
+      "sample_path": null,
+      "tone": 1.0,
+      "synth": {
+        "waveform": 1,
+        "attack": 0.01,
+        "decay": 0.16,
+        "sustain": 0.72,
+        "release": 0.22,
+        "glide": 0.0
+      },
+      "delay_mix": 0.0
+    },
+    {
+      "id": "ch-18e6effabc716f64-5",
+      "name": "Synthé",
+      "kind": "synth",
+      "color": [
+        56,
+        189,
+        248
+      ],
+      "volume": 0.8,
+      "pan": 0.25,
+      "pitch": 0.0,
+      "mute": false,
+      "solo": false,
+      "mixer_track": 4,
+      "sample_path": null,
+      "tone": 1.0,
+      "synth": {
+        "waveform": 1,
+        "attack": 0.01,
+        "decay": 0.16,
+        "sustain": 0.72,
+        "release": 0.22,
+        "glide": 0.0
+      },
+      "delay_mix": 0.3
+    }
+  ],
+  "patterns": [
+    {
+      "id": "pat-18e6effabc7182ec-6",
+      "name": "Pattern 1",
+      "length": 16,
+      "lanes": [
+        [
+          {
+            "on": true,
+            "velocity": 1.0,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": true,
+            "velocity": 1.0,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": true,
+            "velocity": 1.0,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": true,
+            "velocity": 1.0,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          }
+        ],
+        [
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": true,
+            "velocity": 1.0,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": true,
+            "velocity": 1.0,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          }
+        ],
+        [
+          {
+            "on": true,
+            "velocity": 1.0,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": true,
+            "velocity": 1.0,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": true,
+            "velocity": 1.0,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": true,
+            "velocity": 1.0,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": true,
+            "velocity": 1.0,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": true,
+            "velocity": 1.0,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": true,
+            "velocity": 1.0,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": true,
+            "velocity": 1.0,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          }
+        ],
+        [
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          }
+        ],
+        [
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          },
+          {
+            "on": false,
+            "velocity": 0.8,
+            "probability": 1.0,
+            "shift": 0.0,
+            "ratchet": 1
+          }
+        ]
+      ],
+      "notes": [
+        [],
+        [],
+        [],
+        [],
+        [
+          {
+            "pitch": 60,
+            "start": 0,
+            "length": 3,
+            "velocity": 0.65
+          },
+          {
+            "pitch": 63,
+            "start": 4,
+            "length": 3,
+            "velocity": 0.65
+          },
+          {
+            "pitch": 67,
+            "start": 8,
+            "length": 3,
+            "velocity": 0.65
+          },
+          {
+            "pitch": 65,
+            "start": 12,
+            "length": 3,
+            "velocity": 0.65
+          }
+        ]
+      ]
+    }
+  ],
+  "active_pattern": 0,
+  "song_mode": true,
+  "arrangement": [
+    {
+      "pattern": 0,
+      "start_step": 0,
+      "length_steps": 32
+    }
+  ],
+  "created_at": 1794385361736,
+  "modified_at": 1794385361736,
+  "next_pattern_number": 2
+}

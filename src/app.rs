@@ -118,19 +118,7 @@ impl StudioApp {
         audio_error: Option<String>,
         startup_notes: Vec<String>,
     ) -> Self {
-        let mut visuals = egui::Visuals::dark();
-        visuals.window_fill = Color32::from_rgb(13, 15, 20);
-        visuals.panel_fill = Color32::from_rgb(21, 25, 34);
-        visuals.faint_bg_color = Color32::from_rgb(30, 34, 46);
-        visuals.extreme_bg_color = Color32::from_rgb(13, 15, 20);
-        visuals.selection.bg_fill = Color32::from_rgb(139, 92, 246);
-        visuals.hyperlink_color = Color32::from_rgb(139, 92, 246);
-        cc.egui_ctx.set_visuals(visuals);
-
-        cc.egui_ctx.global_style_mut(|style| {
-            style.spacing.item_spacing = egui::vec2(8.0, 6.0);
-            style.spacing.button_padding = egui::vec2(10.0, 6.0);
-        });
+        crate::ui::theme::apply_theme(&cc.egui_ctx, &ARXFUNDTheme::dark());
 
         let beginner = db
             .get_setting("studio.beginner")
